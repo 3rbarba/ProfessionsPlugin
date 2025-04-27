@@ -1,0 +1,6 @@
+name: jobs
+version: '1.0'
+main: be.com.jobs.Jobs
+api-version: '1.21'
+authors: [ Erick_barb ]
+description: Plugin que incrementa profissões no minecraft
