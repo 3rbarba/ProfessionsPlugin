@@ -7,5 +7,7 @@ description: Plugin que incrementa profissões no minecraft
 commands:
   reloadconfig:
     description: Dá reload nas configurações YML
-    usage: /reloadconfig (Sqlconnection)
     permission: jobs.reloadconfig
+  jobs:
+    description: faz configuração basica no plugin
+    permission: jobs.jobs
