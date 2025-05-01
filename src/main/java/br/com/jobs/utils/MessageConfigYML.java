@@ -1,7 +1,6 @@
 package br.com.jobs.utils;
 import br.com.jobs.Jobs;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -9,11 +8,7 @@ import java.io.File;
 import java.io.IOException;
 
 public class MessageConfigYML {
-    //TODO Tô com muito sono pra resolver isso @erick 02:17, 8h codando
-    private final String Msg_FileCreated = "§2O arquivo messages.yml foi criado com sucesso";
-    private final String Msg_Error_Saved = "§cNão foi possível salvar o arquivo messages.yml";
-    private final String Msg_ReloadConfig = "§2Arquivo messages.yml recarregado com sucesso";
-    //
+
     private static final String prefix = Jobs.prefix;
     private final File file;
     private FileConfiguration fileConfiguration;
@@ -21,18 +16,20 @@ public class MessageConfigYML {
     public MessageConfigYML() {
         file = new File(Jobs.getInstance().getDataFolder(), "Messages.yml");
 
-
-
+        // Se o arquivo não existe, cria o arquivo e configura
         if (!file.exists()) {
             try {
                 file.createNewFile();
             } catch (IOException e) {
-                System.out.print("");
+                System.out.print("Erro ao criar o arquivo de configuração!");
             }
-            sendConsoleMessage(Msg_FileCreated);
+            sendConsoleMessage("§2O arquivo messages.yml foi criado com sucesso.");
         }
 
+        // Carrega a configuração
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
+
+        // Carrega as configurações padrões se necessário
         loadConfig();
     }
 
@@ -42,19 +39,20 @@ public class MessageConfigYML {
 
     public void saveConfig() {
         try {
-            fileConfiguration.save(file);
+            getConfig().save(file);
         } catch (IOException e) {
-            sendConsoleMessage(Msg_Error_Saved);
+            sendConsoleMessage("§cErro ao salvar o arquivo messages.yml");
             e.printStackTrace();
         }
     }
 
     public void reloadConfig() {
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        sendConsoleMessage(Msg_ReloadConfig);
+        sendConsoleMessage("§2Arquivo messages.yml recarregado com sucesso.");
     }
 
     private void loadConfig() {
+        // Verifica se a seção "Messages" existe, caso contrário, cria as configurações padrão
         if (getConfig().getConfigurationSection("Messages") == null) {
             getConfig().createSection("Messages");
             getConfig().set("Messages.NoPermission", "&cVocê não tem permissão para usar este comando!");
@@ -74,6 +72,8 @@ public class MessageConfigYML {
             getConfig().set("Messages.Msg_SintaxReloadConf_Error", "&cO uso correto é /reloadconfig [sqlconnection | message]");
             getConfig().set("Messages.Msg_message_ReloadConfig", "&2Arquivo messages.yml recarregado com sucesso");
             getConfig().set("Messages.Msg_Command_Error", "&c Ocorreu um erro ao executar este comando");
+            getConfig().set("Messages.Msg_command_DisconnectDB", "&aDesconectando do banco de dados.");
+            getConfig().set("Messages.Msg_command_ConnectDB", "&aReconectando ao banco de dados.");
             getConfig().set("Messages.Msg_Error_Saved", "&cNão foi possivel salvar o arquivo messages.yml");
             getConfig().set("Messages.Msg_FileCreated", "&2O arquivo messages.yml foi criado com sucesso");
             saveConfig();
@@ -84,5 +84,4 @@ public class MessageConfigYML {
     public void sendConsoleMessage(String message) {
         Bukkit.getConsoleSender().sendMessage(prefix + message);
     }
-
 }

@@ -1,13 +1,15 @@
 package br.com.jobs;
-
 import br.com.jobs.Sql.SqlConnection;
 import br.com.jobs.Sql.SqlConnectionYML;
 import br.com.jobs.commands.CommandReloadConfig;
+import br.com.jobs.utils.ReloadConfigTab;
 import br.com.jobs.utils.MessageConfigYML;
+import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
+
 import java.util.Objects;
 
-public final class Jobs extends JavaPlugin {
+public final class Jobs extends JavaPlugin implements Listener {
 
     public static String prefix = "§6[Profession] ";
 
@@ -22,12 +24,6 @@ public final class Jobs extends JavaPlugin {
         instance = this;
 
         messageyml = new MessageConfigYML();
-        if (messageyml == null) {
-            getLogger().severe("Falha ao carregar MessageConfigYML. Desativando plugin.");
-            getServer().getPluginManager().disablePlugin(this);
-            return;
-        }
-
 
         sqlConnectionYML = new SqlConnectionYML();
         sqlConnection = new SqlConnection();
@@ -35,6 +31,7 @@ public final class Jobs extends JavaPlugin {
 
         registerEvents();
         registerCommands();
+        registerTab();
     }
     @Override
     public void onDisable() {
@@ -44,24 +41,25 @@ public final class Jobs extends JavaPlugin {
     }
     //registers
     private void registerEvents() {
-
     }
     private void registerCommands() {
-        Objects.requireNonNull(getCommand("reloadconfig")).setExecutor(new CommandReloadConfig());
+        getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
+//        getCommand("jobs").setExecutor(new CommandJobs());
+    }
+    public void registerTab() {
+        getCommand("reloadconfig").setTabCompleter(new ReloadConfigTab());
+//        getCommand("jobs").setTabCompleter(new Jobs());
     }
     //sql
     public static SqlConnectionYML getSqlConnectionYML() {
         return sqlConnectionYML;
     }
-
     public static Jobs getInstance() {
         return instance;
     }
-
     public static SqlConnection getSqlConnection() {
         return sqlConnection;
     }
-
     //utils
     public static MessageConfigYML getMessageyml() {
         return messageyml;

@@ -1,22 +1,27 @@
 package br.com.jobs.Sql;
+
 import br.com.jobs.Jobs;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+
 import java.io.File;
 import java.io.IOException;
+
 import static br.com.jobs.Jobs.getMessageyml;
 import static br.com.jobs.Jobs.prefix;
+import static br.com.jobs.utils.TextUtils.color;
 
 public class SqlConnectionYML {
     private final File file;
     private FileConfiguration fileConfiguration;
 
     private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
-    private static final String Msg_CreationFileDB_sucess = cfMessage.getString("Msg_CreationFileDB_sucess").replace("&", "§");
-    private static final String Msg_SaveFileDB_Error = cfMessage.getString("Msg_SaveFileDB_Error").replace("&", "§");
-    public static final String Msg_ReloadConfigDB = cfMessage.getString("Msg_ReloadConfigDB").replace("&", "§");
+
+    private static final String Msg_CreationFileDB_sucess = color(cfMessage.getString("Msg_CreationFileDB_sucess"));
+    private static final String Msg_SaveFileDB_Error = color(cfMessage.getString("Msg_SaveFileDB_Error"));
+    public static final String Msg_ReloadConfigDB = color(cfMessage.getString("Msg_ReloadConfigDB"));
 
     public SqlConnectionYML() {
         file = new File(Jobs.getInstance().getDataFolder(), "SqlConnection.yml");
@@ -63,7 +68,8 @@ public class SqlConnectionYML {
             saveConfig();
         }
     }
-    public void sendConsoleMessage(String message){
+
+    public void sendConsoleMessage(String message) {
         Bukkit.getConsoleSender().sendMessage(prefix + message);
     }
 }
