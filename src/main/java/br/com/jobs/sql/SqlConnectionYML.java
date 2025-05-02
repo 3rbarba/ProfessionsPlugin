@@ -1,4 +1,4 @@
-package br.com.jobs.Sql;
+package br.com.jobs.sql;
 
 import br.com.jobs.Jobs;
 import org.bukkit.Bukkit;
@@ -24,7 +24,7 @@ public class SqlConnectionYML {
     public static final String Msg_ReloadConfigDB = color(cfMessage.getString("Msg_ReloadConfigDB"));
 
     public SqlConnectionYML() {
-        file = new File(Jobs.getInstance().getDataFolder(), "SqlConnection.yml");
+        file = new File(Jobs.getInstance().getDataFolder(), "Database.yml");
 
         if (!file.exists()) {
             try {
@@ -62,7 +62,6 @@ public class SqlConnectionYML {
             getConfig().createSection("MySql");
             getConfig().set("MySql.HOST", "localhost");
             getConfig().set("MySql.PORT", 3306);
-//            getConfig().set("MySql.DATABASE", "professions");
             getConfig().set("MySql.USER", "root");
             getConfig().set("MySql.PASSWORD", "root");
             saveConfig();

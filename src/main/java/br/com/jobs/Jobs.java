@@ -1,13 +1,16 @@
 package br.com.jobs;
-import br.com.jobs.Sql.SqlConnection;
-import br.com.jobs.Sql.SqlConnectionYML;
+import br.com.jobs.profissions.JobSelectGuiListener;
+import br.com.jobs.sql.SqlConnection;
+import br.com.jobs.sql.SqlConnectionYML;
+import br.com.jobs.commands.CommadJobSelect;
 import br.com.jobs.commands.CommandReloadConfig;
-import br.com.jobs.utils.ReloadConfigTab;
 import br.com.jobs.utils.MessageConfigYML;
+import br.com.jobs.utils.ReloadConfigTab;
+import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.Objects;
+import java.sql.Connection;
 
 public final class Jobs extends JavaPlugin implements Listener {
 
@@ -33,35 +36,44 @@ public final class Jobs extends JavaPlugin implements Listener {
         registerCommands();
         registerTab();
     }
+
     @Override
     public void onDisable() {
         if (sqlConnection != null) {
             sqlConnection.disconnect();
         }
     }
-    //registers
+
     private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new JobSelectGuiListener(), this);
     }
+
     private void registerCommands() {
         getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
-//        getCommand("jobs").setExecutor(new CommandJobs());
+        getCommand("profission").setExecutor(new CommadJobSelect());
     }
+
     public void registerTab() {
         getCommand("reloadconfig").setTabCompleter(new ReloadConfigTab());
-//        getCommand("jobs").setTabCompleter(new Jobs());
     }
-    //sql
+
+    public static MessageConfigYML getMessageyml() {
+        return messageyml;
+    }
+
     public static SqlConnectionYML getSqlConnectionYML() {
         return sqlConnectionYML;
     }
+
     public static Jobs getInstance() {
         return instance;
     }
+
     public static SqlConnection getSqlConnection() {
         return sqlConnection;
     }
-    //utils
-    public static MessageConfigYML getMessageyml() {
-        return messageyml;
+
+    public Connection getConnection() {
+        return getSqlConnection().getConnection();
     }
 }

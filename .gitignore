@@ -1,3 +1,5 @@
+.gitignore
+qodana.yaml
 # User-specific stuff
 .idea/
 
@@ -96,7 +98,6 @@ $RECYCLE.BIN/
 *.lnk
 
 target/
-qodana.yaml
 pom.xml.tag
 pom.xml.releaseBackup
 pom.xml.versionsBackup

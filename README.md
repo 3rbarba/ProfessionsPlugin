@@ -1,5 +1,6 @@
 Dependencia:
 [AuraSkills](https://aurelium.dev/auraskills/download)
+
 Requer conexão com banco de dados mysql.
 
 

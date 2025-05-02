@@ -1,19 +1,17 @@
-package br.com.jobs.Sql;
-
+package br.com.jobs.sql;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.Bukkit;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-
 import static br.com.jobs.Jobs.*;
 import static br.com.jobs.utils.TextUtils.color;
 
 public class SqlCreateDatabase {
+    public static final String default_db = "professions";
 
     private static final ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
     private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
-    private static final String default_db = "professions";
 
     private static final String Msg_db_sucess = color(cfMessage.getString("Msg_db_sucess"));
     private static final String Msg_db_error = color(cfMessage.getString("Msg_db_error"));
@@ -47,12 +45,11 @@ public class SqlCreateDatabase {
     }
 
     public void createJobsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS jobs_data (" +
-                "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                "player_uuid VARCHAR(36) NOT NULL, " +
-                "job_name VARCHAR(50) NOT NULL, " +
-                "level INT DEFAULT 1" +
-                ");";
+        String sql = "CREATE TABLE IF NOT EXISTS jobs (" +
+                     "uuid VARCHAR(36) PRIMARY KEY," +
+                     "name VARCHAR(16) NOT NULL," +
+                     "profession VARCHAR(32) NOT NULL"+
+                     ");";
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);

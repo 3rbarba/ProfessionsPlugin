@@ -5,3 +5,4 @@ public class TextUtils {
         return msg == null ? "" : msg.replace("&", "§");
     }
 }
+//Dormir quase 4 da manha por causa disso. 9h quebrando a cabeça
