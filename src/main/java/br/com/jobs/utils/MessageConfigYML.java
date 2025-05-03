@@ -76,6 +76,7 @@ public class MessageConfigYML {
             getConfig().set("Messages.Msg_Error_Saved", "&cNão foi possivel salvar o arquivo messages.yml");
             getConfig().set("Messages.Msg_FileCreated", "&2O arquivo messages.yml foi criado com sucesso");
             getConfig().set("Messages.Msg_Target_Error", "'%s' não é um jogador");
+            getConfig().set("Messages.Msg_Command_profission_Error", "Erro ao executar este comando");
             getConfig().set("Messages.Job_Archer", "Arqueiro");
             getConfig().set("Messages.Job_Enchanter", "Encantador");
             getConfig().set("Messages.Job_Lumberjack", "Lenhador");

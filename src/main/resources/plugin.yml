@@ -2,11 +2,11 @@ name: jobs
 version: '1.0'
 main: br.com.jobs.Jobs
 api-version: '1.21'
-authors: [ Erick_barb ]
+authors: [Erick_barb]
 description: Plugin que incrementa profissões no minecraft
 commands:
   reloadconfig:
-    description: Dá reload nas configurações YML
+    description: recarrega as configurações YML
     permission: jobs.reloadconfig
     aliases:
       - rlc
@@ -15,7 +15,7 @@ commands:
     permission: jobs.jobs
   profission:
     description: faz configuração basica no plugin
-    permission: jobs.JobSelect
+    permission: jobs.jobselect
     aliases:
       - profissao
       - professionselect

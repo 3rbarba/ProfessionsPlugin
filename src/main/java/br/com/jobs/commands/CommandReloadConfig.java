@@ -6,9 +6,11 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import static br.com.jobs.Jobs.*;
+import static br.com.jobs.sql.SqlConnection.Msg_connectionDB_failed;
 import static br.com.jobs.utils.TextUtils.color;
 
 public class CommandReloadConfig implements CommandExecutor {
@@ -40,18 +42,19 @@ public class CommandReloadConfig implements CommandExecutor {
                             sendMessagePlayer(sender, Msg_Msg_ComReloadConfig);
                             return true;
                         case "database":
-                            new SqlConnectionYML().reloadConfig();
-                            sendMessagePlayer(sender, Msg_db_ComReloadConfig);
                             getSqlConnection().disconnect();
                             sendMessagePlayer(sender, color(Msg_command_DisconnectDB));
-                            try {
-                                Thread.sleep(5000);
-                            } catch (InterruptedException e) {
-                                Bukkit.getLogger().warning(prefix + "error waiting before reconnection: " + e.getMessage());
-                                Thread.currentThread().interrupt();
-                            }
+                            Thread.sleep(2000);
+                            new SqlConnectionYML().reloadConfig();
+                            sendMessagePlayer(sender, Msg_db_ComReloadConfig);
+                            Thread.sleep(2000);
                             getSqlConnection().connect();
-                            sendMessagePlayer(sender, color(Msg_command_ReconnectDB));
+                            if (getSqlConnection().getConnection() != null) {
+                                sendMessagePlayer(sender, color(Msg_command_ReconnectDB));
+                            } else {
+                                sendMessagePlayer(sender, color(Msg_connectionDB_failed) + " Verifique o Database.yml e reinicie o servidor");
+                                //TODO trocar por uma mensagem la no Message.yml
+                            }
                             return true;
                         default:
                             sendMessagePlayer(sender, Msg_Sintax_Error);
@@ -72,6 +75,6 @@ public class CommandReloadConfig implements CommandExecutor {
     }
 
     private void sendMessagePlayer(CommandSender sender, String message) {
-        sender.sendMessage(prefix + message);
+        if (sender instanceof Player) sender.sendMessage(prefix + message);
     }
 }

@@ -58,5 +58,24 @@ public class JobSelectGuiListener implements Listener {
 
         target.openInventory(inv);
     }
+    //3h25m codando 03:53
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent e) {
+        if (!e.getView().getTitle().equals(gui)) return;
 
+        e.setCancelled(true);
+        Player player = (Player) e.getWhoClicked();
+        ItemStack item = e.getCurrentItem();
+
+        if (item != null && item.getType() != Material.AIR && item.hasItemMeta()) {
+            String jobName = item.getItemMeta().getDisplayName().replace("§a", "");
+
+
+            SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
+            jobManager.setPlayerProfession(player.getUniqueId(), player.getName(), jobName);
+
+            player.sendMessage("§aVocê selecionou a profissão: §e" + jobName);
+            player.closeInventory();
+        }
+    }
 }

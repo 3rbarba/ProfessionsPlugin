@@ -29,45 +29,50 @@ public class CommadJobSelect implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
         if (!Arrays.asList(commandAliases).contains(cmd.getName().toLowerCase())) {
-            Player PSender = (Player) sender;
-            Player target;
+            try {
+                Player PSender = (Player) sender;
+                Player target;
 
-            if (!(sender instanceof Player)) {
-                sender.sendMessage(Msg_NoPermission);
-                return true;
-            }
-            SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
-            UUID executorUUID = PSender.getUniqueId();
+                if (!(sender instanceof Player)) {
+                    sender.sendMessage(Msg_NoPermission);
+                    return true;
+                }
+                SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
+                UUID executorUUID = PSender.getUniqueId();
 
-            if (jobManager.hasProfission(String.valueOf(executorUUID)) && !PSender.hasPermission("jobs.jobselect.others")) {
-                sender.sendMessage(color("Você já possui uma profissão "));
-                return true;
-            }
-
-
-            if (args.length == 1) {
-                target = Bukkit.getPlayerExact(args[0]);
-
-                if (target == null) {
-                    sendMessagePlayer(sender, Msg_Target_Error);
+                if (jobManager.hasProfission(String.valueOf(executorUUID)) && !PSender.hasPermission("jobs.jobselect.others")) {
+                    sender.sendMessage(color("Você já possui uma profissão "));
                     return true;
                 }
 
-                if (!PSender.hasPermission("jobs.jobselect.others")) {
-                    sendMessagePlayer(sender, Msg_NoPermission);
-                    return true;
+
+                if (args.length == 1) {
+                    target = Bukkit.getPlayerExact(args[0]);
+
+                    if (target == null) {
+                        sendMessagePlayer(sender, Msg_Target_Error);
+                        return true;
+                    }
+
+                    if (!PSender.hasPermission("jobs.jobselect.others")) {
+                        sendMessagePlayer(sender, Msg_NoPermission);
+                        return true;
+                    }
+                } else {
+                    target = PSender;
                 }
-            } else {
-                target = PSender;
-            }
-            //TODO metodo que verifica se o player está na database. Vai ser usado para o comando /profisson (nick) remove
+                //TODO metodo que verifica se o player está na database. Vai ser usado para o comando /profisson (nick) remove
 /*            if (!jobManager.hasPlayer(target.getUniqueId())) {
                 sendMessagePlayer(sender, "§cO jogador " + target.getName() + " ainda não possui dados no banco de dados.");
                 return true;
             }
 */
-            JobSelectGuiListener.openGUI(target);
-            return true;
+                JobSelectGuiListener.openGUI(target);
+                return true;
+            }catch (Exception e){
+                Bukkit.getLogger().warning(Msg_Command_profission_Error + e.getMessage());
+                sendMessagePlayer(sender, Msg_Command_profission_Error);
+            }
         }
         return false;
     }

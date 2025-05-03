@@ -8,10 +8,10 @@ import static br.com.jobs.Jobs.*;
 import static br.com.jobs.utils.TextUtils.color;
 
 public class SqlCreateDatabase {
-    public static final String default_db = "professions";
 
     private static final ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
     private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
+    public static final String default_db = cf.getString("DATABASE");
 
     private static final String Msg_db_sucess = color(cfMessage.getString("Msg_db_sucess"));
     private static final String Msg_db_error = color(cfMessage.getString("Msg_db_error"));

@@ -10,11 +10,11 @@ import static br.com.jobs.Jobs.getSqlConnectionYML;
 import static br.com.jobs.sql.SqlCreateDatabase.default_db;
 import static br.com.jobs.utils.TextUtils.color;
 
-public class SqlConnection {
+public class SqlConnection{
     private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
     private static final String Msg_NoFoundDB_file = color(cfMessage.getString("Msg_NoFoundDB_file"));
     private static final String Msg_connectionDB_sucess = color(cfMessage.getString("Msg_connectionDB_sucess"));
-    private static final String Msg_connectionDB_failed = color(cfMessage.getString("Msg_connectionDB_failed"));
+    public static final String Msg_connectionDB_failed = color(cfMessage.getString("Msg_connectionDB_failed"));
     private static final String Msg_connectionDB_finished = color(cfMessage.getString("Msg_connectionDB_finished"));
     private static final String Msg_connectionDB_FinishedError = color(cfMessage.getString("Msg_connectionDB_finishedError"));
     private static final String Msg_IncorretFieldsDB = color(cfMessage.getString("Msg_IncorretFieldsDB"));
@@ -31,8 +31,6 @@ public class SqlConnection {
         String port = cf.getString("PORT");
         String user = cf.getString("USER");
         String pass = cf.getString("PASSWORD");
-        sendConsoleMessage("mysql://" + host + ":" + port);
-        sendConsoleMessage("user: " + user + ", "  + " password: " + pass);
 
         if (host == null || user == null || pass == null || port == null) {
             sendConsoleMessage(Msg_IncorretFieldsDB);
@@ -57,7 +55,9 @@ public class SqlConnection {
 
             sendConsoleMessage(Msg_connectionDB_sucess);
         } catch (SQLException e) {
-            sendConsoleMessage(Msg_connectionDB_failed + e.getMessage());
+            sendConsoleMessage(Msg_connectionDB_failed);
+            sendConsoleMessage("mysql://" + host + ":" + port + "/" + default_db);
+            sendConsoleMessage("user: " + user + ", "  + " password: " + pass);
             e.printStackTrace();
         }
     }

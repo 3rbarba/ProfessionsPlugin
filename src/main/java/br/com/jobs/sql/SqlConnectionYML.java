@@ -64,6 +64,7 @@ public class SqlConnectionYML {
             getConfig().set("MySql.PORT", 3306);
             getConfig().set("MySql.USER", "root");
             getConfig().set("MySql.PASSWORD", "root");
+            getConfig().set("MySql.DATABASE", "professions");
             saveConfig();
         }
     }
