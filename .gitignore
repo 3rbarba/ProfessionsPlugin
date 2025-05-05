@@ -1,8 +1,9 @@
-.gitignore
-qodana.yaml
+*.gitignore
+\professions\qodana.yaml
+\test\*
+test/*
 # User-specific stuff
 .idea/
-
 *.iml
 *.ipr
 *.iws

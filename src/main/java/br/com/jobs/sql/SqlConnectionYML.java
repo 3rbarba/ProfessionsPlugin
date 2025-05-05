@@ -1,27 +1,15 @@
 package br.com.jobs.sql;
-
 import br.com.jobs.Jobs;
-import org.bukkit.Bukkit;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-
 import java.io.File;
 import java.io.IOException;
-
-import static br.com.jobs.Jobs.getMessageyml;
-import static br.com.jobs.Jobs.prefix;
-import static br.com.jobs.utils.TextUtils.color;
+import static br.com.jobs.utils.TextUtils.*;
+import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class SqlConnectionYML {
     private final File file;
     private FileConfiguration fileConfiguration;
-
-    private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
-
-    private static final String Msg_CreationFileDB_sucess = color(cfMessage.getString("Msg_CreationFileDB_sucess"));
-    private static final String Msg_SaveFileDB_Error = color(cfMessage.getString("Msg_SaveFileDB_Error"));
-    public static final String Msg_ReloadConfigDB = color(cfMessage.getString("Msg_ReloadConfigDB"));
 
     public SqlConnectionYML() {
         file = new File(Jobs.getInstance().getDataFolder(), "Database.yml");
@@ -47,7 +35,7 @@ public class SqlConnectionYML {
         try {
             fileConfiguration.save(file);
         } catch (IOException e) {
-            sendConsoleMessage(Msg_SaveFileDB_Error);
+            warnLoggers(Msg_SaveFileDB_Error);
             e.printStackTrace();
         }
     }
@@ -67,9 +55,5 @@ public class SqlConnectionYML {
             getConfig().set("MySql.DATABASE", "professions");
             saveConfig();
         }
-    }
-
-    public void sendConsoleMessage(String message) {
-        Bukkit.getConsoleSender().sendMessage(prefix + message);
     }
 }

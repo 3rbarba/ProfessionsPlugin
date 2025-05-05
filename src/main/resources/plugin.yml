@@ -1,5 +1,5 @@
-name: jobs
-version: '1.0'
+name: Profissions
+version: '1.0.0'
 main: br.com.jobs.Jobs
 api-version: '1.21'
 authors: [Erick_barb]
@@ -10,14 +10,14 @@ commands:
     permission: jobs.reloadconfig
     aliases:
       - rlc
-  jobs:
-    description: faz configuração basica no plugin
-    permission: jobs.jobs
   profission:
-    description: faz configuração basica no plugin
+    description: Abre o menu de seleção de profissões
     permission: jobs.jobselect
     aliases:
       - profissao
       - professionselect
       - jobselect
       - profissaoset
+  jobs:
+    permission: jobs.jobs
+  teste:

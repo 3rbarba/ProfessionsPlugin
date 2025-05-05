@@ -1,3 +1,6 @@
+# Português
+
+# Uso:
 ### Índice:
 
 
@@ -9,7 +12,6 @@
 
 [Configuração do Banco de dados](#configuração-do-database)
 
-# Uso:
 
 ## Comandos:
 
@@ -32,12 +34,15 @@
                    possível o jogador ter mais que uma profissão, ou seja, quando esse comando for
                    executado ele irá sobrescrever a profissão que já existe no jogador)
                    o comando /profession [nick] requer a permissão: jobs.jobselect.others
+    comando: /jobs
+        permissão: jobs
+        descrição: Quando usado /jobs reload recarrega o plugin
 
 ## Dependências:
 
 * [AuraSkills](https://aurelium.dev/auraskills/download) <!-- pode ser que não seja uma dependencia, apenas uma integração -->
 * Banco de dados MySql
-* paper/bukkit
+* Paper/Bukkit
 
 ## Mensagens
 
@@ -69,18 +74,6 @@ para modificar.
         Msg_FileCreated: '&2O arquivo messages.yml foi criado com sucesso'
         Msg_Target_Error: '''%s'' não é um jogador'
         Msg_Command_profission_Error: Erro ao executar este comando
-        Job_Archer: Arqueiro
-        Job_Enchanter: Encantador
-        Job_Lumberjack: Lenhador
-        Job_Farmer: Fazendeiro
-        Job_Fisherman: Pescador
-        Job_Miner: Minerador
-        Job_Tank: Tanker
-        Job_Agility: Maratonista
-        Job_Warrior: Guerreiro
-        Job_Alchemist: Alquimista
-        Job_Excavation: Escavador
-        Job_Gui: Selecione sua profissão
 
   <!-- Lembrar de verificar se está atualizado última atualização 03/05 -->
 
@@ -104,7 +97,8 @@ para modificar.
 
 1.  Na primeira linha temos o 'profession'@'ip_do_database'. O profession é o nome de usuário a
     ser criado e você terá que colocar esse usuário no campo USER no Database.yml.
-    No ip_do_database será colocado o mesmo endereço definido no 'HOST'.
+    No ip_do_database será colocado @'%' para que ele se conecte de qualquer lugar ou se 
+    ou se preferir pode também colocar o ip da maquina qual deseja se conectar.
     A 'senha' tem que ser igual a "PASSWORD"
 
 2.  Na segunda linha você define os acessos do usuário é importante que seja mantido o ALL PRIVILEGES

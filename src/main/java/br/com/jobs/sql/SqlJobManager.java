@@ -3,6 +3,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.UUID;
+import static br.com.jobs.utils.TextUtils.warnLoggers;
 
 public class SqlJobManager {
 
@@ -32,14 +33,14 @@ public class SqlJobManager {
             ps.setString(1, uuid.toString());
             return ps.executeQuery().next();
         } catch (SQLException e) {
-            e.printStackTrace();
+            warnLoggers(e.toString());
             return false;
         }
     }
     public boolean hasProfission(String profession) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM jobs WHERE uuid = ? AND profession IS NOT NULL");
-            ps.setString(1, profession.toString());
+            ps.setString(1, profession);
             return ps.executeQuery().next();
         } catch (SQLException e) {
             e.printStackTrace();

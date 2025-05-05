@@ -1,39 +1,33 @@
 package br.com.jobs.sql;
-import br.com.jobs.Jobs;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import static br.com.jobs.Jobs.getMessageyml;
 import static br.com.jobs.Jobs.getSqlConnectionYML;
-import static br.com.jobs.sql.SqlCreateDatabase.default_db;
-import static br.com.jobs.utils.TextUtils.color;
+import static br.com.jobs.utils.TextUtils.*;
+import static br.com.jobs.utils.messages.MessagesHandle.*;
 
-public class SqlConnection{
-    private static final ConfigurationSection cfMessage = getMessageyml().getConfig().getConfigurationSection("Messages");
-    private static final String Msg_NoFoundDB_file = color(cfMessage.getString("Msg_NoFoundDB_file"));
-    private static final String Msg_connectionDB_sucess = color(cfMessage.getString("Msg_connectionDB_sucess"));
-    public static final String Msg_connectionDB_failed = color(cfMessage.getString("Msg_connectionDB_failed"));
-    private static final String Msg_connectionDB_finished = color(cfMessage.getString("Msg_connectionDB_finished"));
-    private static final String Msg_connectionDB_FinishedError = color(cfMessage.getString("Msg_connectionDB_finishedError"));
-    private static final String Msg_IncorretFieldsDB = color(cfMessage.getString("Msg_IncorretFieldsDB"));
+public class SqlConnection {
 
     private Connection connection;
 
     public void connect() {
         ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
+
         if (cf == null) {
             sendConsoleMessage(Msg_NoFoundDB_file);
             return;
         }
+
+        String default_db = cf.getString("DATABASE", "jobs");
         String host = cf.getString("HOST");
         String port = cf.getString("PORT");
         String user = cf.getString("USER");
         String pass = cf.getString("PASSWORD");
 
         if (host == null || user == null || pass == null || port == null) {
-            sendConsoleMessage(Msg_IncorretFieldsDB);
+            warnLoggers(Msg_IncorretFieldsDB);
             return;
         }
 
@@ -43,21 +37,20 @@ public class SqlConnection{
             try (Connection tempConnection = DriverManager.getConnection(baseUrl, user, pass)) {
                 SqlCreateDatabase creator = new SqlCreateDatabase(tempConnection);
                 creator.createDatabase();
-            } catch (NullPointerException e) {
-                sendConsoleMessage(String.valueOf(e));
-                return;
             }
 
-            connection = DriverManager.getConnection(baseUrl + "/" + default_db + "?autoReconnect=true&useSSL=false", user, pass);
+            connection = DriverManager.getConnection
+                    (baseUrl + "/" + default_db + "?autoReconnect=true&useSSL=false", user, pass);
 
             SqlCreateDatabase tableCreator = new SqlCreateDatabase(connection);
             tableCreator.createJobsTable();
 
             sendConsoleMessage(Msg_connectionDB_sucess);
+
         } catch (SQLException e) {
-            sendConsoleMessage(Msg_connectionDB_failed);
-            sendConsoleMessage("mysql://" + host + ":" + port + "/" + default_db);
-            sendConsoleMessage("user: " + user + ", "  + " password: " + pass);
+            warnLoggers(Msg_connectionDB_failed);
+            infoLoggers("mysql://" + host + ":" + port + "/" + default_db);
+            infoLoggers("user: " + user + ", password: " + pass);
             e.printStackTrace();
         }
     }
@@ -66,10 +59,10 @@ public class SqlConnection{
         try {
             if (connection != null && !connection.isClosed()) {
                 connection.close();
-                sendConsoleMessage(Msg_connectionDB_finished);
+                infoLoggers(Msg_connectionDB_finished);
             }
         } catch (SQLException e) {
-            sendConsoleMessage(Msg_connectionDB_FinishedError + e.getMessage());
+            warnLoggers(Msg_connectionDB_FinishedError + e.getMessage());
         }
     }
 
@@ -77,7 +70,21 @@ public class SqlConnection{
         return connection;
     }
 
-    private void sendConsoleMessage(String message) {
-        Bukkit.getConsoleSender().sendMessage(Jobs.prefix + message);
+    public boolean isConnectionValid() {
+        try {
+            if (connection == null || connection.isClosed()) {
+                return false;
+            }
+            return connection.isValid(10);
+        } catch (SQLException e) {
+            return false;
+        }
+    }
+
+    public void attemptReconnect() {
+        if (!isConnectionValid()) {
+            sendConsoleMessage("Tentando reconectar ao banco de dados...");
+            connect();
+        }
     }
 }

@@ -1,8 +1,32 @@
 package br.com.jobs.utils;
+import org.bukkit.Bukkit;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import static br.com.jobs.utils.messages.MessagesHandle.*;
+import static org.bukkit.Bukkit.getLogger;
 
-public class TextUtils {
+public class TextUtils{
+
     public static String color(String msg) {
         return msg == null ? "" : msg.replace("&", "§");
     }
+    public static void sendConsoleMessage(String msg) {
+        try {
+            Bukkit.getConsoleSender().sendMessage(prefix + msg);}
+        catch (NullPointerException e){e.printStackTrace();}
+    }
+    public static void sendPlayerMessage(CommandSender sender, String msg) {
+        try {if (sender instanceof Player) sender.sendMessage(prefix + msg);}
+        catch (NullPointerException e){e.printStackTrace();}
+    }
+    public static void warnLoggers(String msg) {
+        String msgmodif = msg;
+        if (msgmodif.contains("§") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
+        getLogger().warning("[Professions]%s".formatted(msgmodif));
+    }
+    public static void infoLoggers(String msg) {
+        String msgmodif = msg;
+        if (msgmodif.contains("§") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
+        getLogger().info("[Professions]%s".formatted(msgmodif));
+    }
 }
-//Dormir quase 4 da manha por causa disso. 9h quebrando a cabeça
