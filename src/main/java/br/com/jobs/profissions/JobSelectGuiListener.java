@@ -1,11 +1,11 @@
 package br.com.jobs.profissions;
-
 import br.com.jobs.Jobs;
 import br.com.jobs.sql.SqlJobManager;
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.NamespacedKey;
+import br.com.jobs.utils.TextUtils;
+import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
+import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import static br.com.jobs.Jobs.getGuiConfigYML;
@@ -23,8 +24,15 @@ import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class JobSelectGuiListener implements Listener {
 
-    public static void openGUI(Player target) {
+    private static final NamespacedKey PROFESSION_KEY = new NamespacedKey(Jobs.getInstance(), "profession");
 
+    private final SqlJobManager jobManager;
+
+    public JobSelectGuiListener() {
+        this.jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
+    }
+
+    public static void openGUI(Player target) {
         ConfigurationSection guiSection = getGuiConfigYML().getConfig().getConfigurationSection("gui");
 
         if (guiSection == null) {
@@ -32,18 +40,20 @@ public class JobSelectGuiListener implements Listener {
             return;
         }
 
-        // Define o título do inventário
         String title = guiSection.getString("title", "Seleção de Profissões");
         Inventory inv = Bukkit.createInventory(null, 45, title);
 
-        // Obtém os itens da GUI
         ConfigurationSection itemsSection = guiSection.getConfigurationSection("items");
         if (itemsSection != null) {
-            for (String jobKey : itemsSection.getKeys(false)) { // jobKey é a chave fixa (ex: "archer", "warrior")
+            for (String jobKey : itemsSection.getKeys(false)) {
                 ConfigurationSection itemConfig = itemsSection.getConfigurationSection(jobKey);
                 if (itemConfig == null) continue;
 
                 int slot = itemConfig.getInt("slot");
+                if (slot < 0 || slot >= inv.getSize()) {
+                    continue;
+                }
+
                 String materialName = itemConfig.getString("material", "BOOK");
                 Material material = Material.matchMaterial(materialName);
 
@@ -52,8 +62,10 @@ public class JobSelectGuiListener implements Listener {
                     continue;
                 }
 
-                String displayName = itemConfig.getString("display-name", "§aProfissão");
-                List<String> lore = itemConfig.getStringList("lore");
+                String displayName = color(itemConfig.getString("display_name", "§aProfissão"));
+                List<String> lore = itemConfig.isSet("lore")
+                        ? itemConfig.getStringList("lore").stream().map(TextUtils::color).toList()
+                        : Collections.emptyList();
 
                 ItemStack item = new ItemStack(material);
                 ItemMeta meta = item.getItemMeta();
@@ -62,11 +74,10 @@ public class JobSelectGuiListener implements Listener {
                     meta.setLore(lore);
 
                     meta.getPersistentDataContainer().set(
-                            new NamespacedKey(Jobs.getInstance(), "profession"),
+                            PROFESSION_KEY,
                             PersistentDataType.STRING,
                             jobKey
                     );
-
                     item.setItemMeta(meta);
                 }
 
@@ -75,18 +86,14 @@ public class JobSelectGuiListener implements Listener {
         }
 
         fillPlaceholderItems(inv);
-
         target.openInventory(inv);
     }
-
-
-     // Preenche os espaços vazios com um item.
 
     private static void fillPlaceholderItems(Inventory inv) {
         ItemStack placeholder = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = placeholder.getItemMeta();
         if (meta != null) {
-            meta.setDisplayName("");
+            meta.setDisplayName(" ");
             placeholder.setItemMeta(meta);
         }
 
@@ -99,15 +106,13 @@ public class JobSelectGuiListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-        // Verifica se o inventário clicado NÃO é a GUI de profissões
         String guiTitle = getGuiConfigYML().getConfig().getString("gui.title", "Seleção de Profissões");
         if (!e.getView().getTitle().equals(guiTitle)) {
             return;
         }
 
-        e.setCancelled(true); // Cancela o clique (não permite mover itens)
+        e.setCancelled(true);
 
-        // Valida o item NÃO clicado
         ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta()) {
             return;
@@ -116,24 +121,19 @@ public class JobSelectGuiListener implements Listener {
         ItemMeta meta = clickedItem.getItemMeta();
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-        // Verifica se o item clicado NÃO possui a tag "profession"
-        NamespacedKey professionKey = new NamespacedKey(Jobs.getInstance(), "profession");
-        if (!dataContainer.has(professionKey, PersistentDataType.STRING)) {
+        if (!dataContainer.has(PROFESSION_KEY, PersistentDataType.STRING)) {
             return;
         }
-
-        // Obtém a chave fixa da profissão
-        String jobKey = dataContainer.get(professionKey, PersistentDataType.STRING);
-        if (jobKey == null) return; // Evitar erro inesperado
+        String jobKey = dataContainer.get(PROFESSION_KEY, PersistentDataType.STRING);
+        String displayName = removeColors(getGuiConfigYML().getConfig().getString("gui.items." + jobKey + ".display_name"));
+        if (jobKey == null) return;
 
         Player player = (Player) e.getWhoClicked();
-
-        // Salva a profissão no banco de dados usando a chave fixa
-        SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
         jobManager.setPlayerProfession(player.getUniqueId(), player.getName(), jobKey);
 
-        // Envia mensagem ao jogador e fecha o inventário
-        sendPlayerMessage(player, Msg_Command_JobsSelect_SelectProfission + jobKey);
+        sendPlayerMessage(player, Msg_Command_JobsSelect_SelectProfission + displayName);
+        Player p = (Player) player;
+        p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         player.closeInventory();
     }
 }

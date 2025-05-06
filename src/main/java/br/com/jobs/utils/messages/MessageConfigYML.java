@@ -59,6 +59,8 @@ public class MessageConfigYML {
             getConfig().set("Messages.NoPermission", "&cVocê não tem permissão para usar este comando!");
             getConfig().set("Messages.Msg_Command_Error", "&cOcorreu um erro ao executar este comando.");
             getConfig().set("Messages.Msg_Target_Error", "&c'%s' não é um jogador.");
+            getConfig().set("Messages.Placeholder.hasPermission_false", "False");
+            getConfig().set("Messages.Placeholder.hasPermission_true", "True");
 
             getConfig().set("Messages.Database.Msg_NoFoundDB_file", "&2Arquivo SqlConection não encontrado.");
             getConfig().set("Messages.Database.Msg_connectionDB_success", "&aConexão com o banco de dados estabelecida com sucesso.");

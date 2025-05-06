@@ -51,7 +51,7 @@ public class CommandJobSelect implements CommandExecutor {
             return true;
 
         } catch (Exception e) {
-            warnLoggers(Msg_command_Error + e.getMessage());//todo remover getmessage
+            warnLoggers(Msg_command_Error);
             sendPlayerMessage(sender, Msg_command_Error);
             return true;
         }

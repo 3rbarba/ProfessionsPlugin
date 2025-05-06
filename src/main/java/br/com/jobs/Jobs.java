@@ -1,4 +1,5 @@
 package br.com.jobs;
+
 import br.com.jobs.commands.CommandJobSelect;
 import br.com.jobs.commands.CommandJobs;
 import br.com.jobs.commands.CommandReloadConfig;
@@ -6,6 +7,8 @@ import br.com.jobs.profissions.GuiConfigYML;
 import br.com.jobs.profissions.JobSelectGuiListener;
 import br.com.jobs.sql.SqlConnection;
 import br.com.jobs.sql.SqlConnectionYML;
+import br.com.jobs.sql.SqlJobManager;
+import br.com.jobs.utils.Papi.SomeExpansion;
 import br.com.jobs.utils.TabComplete;
 import br.com.jobs.utils.messages.MessageConfigYML;
 import br.com.jobs.utils.messages.MessagesHandle;
@@ -13,7 +16,10 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+
 import java.sql.Connection;
+
+import static br.com.jobs.utils.TextUtils.infoLoggers;
 
 public final class Jobs extends JavaPlugin implements Listener {
 
@@ -22,30 +28,17 @@ public final class Jobs extends JavaPlugin implements Listener {
     private static MessageConfigYML messageyml;
     private static GuiConfigYML guiConfigYML;
     private static SqlConnection sqlConnection;
-    private static MessagesHandle messageHandler;
+    private MessagesHandle messageHandler;
 
     @Override
     public void onEnable() {
         instance = this;
-        messageyml = new MessageConfigYML();
-        messageHandler = new MessagesHandle();
-        sqlConnectionYML = new SqlConnectionYML();
-        guiConfigYML = new GuiConfigYML();
-
+        Messages();
+        General();
 
         registerTab();
         registerCommands();
         registerEvents();
-
-        sqlConnection = new SqlConnection();
-        sqlConnection.connect();
-        new BukkitRunnable() {            @Override
-            public void run() {
-                if (sqlConnection != null) {
-                    sqlConnection.attemptReconnect();
-                }
-            }
-        }.runTaskTimer(this, 0, 6000);
     }
 
     @Override
@@ -70,7 +63,7 @@ public final class Jobs extends JavaPlugin implements Listener {
     }
 
     public static GuiConfigYML getGuiConfigYML() {
-       return guiConfigYML;
+        return guiConfigYML;
     }
 
     public static SqlConnection getSqlConnection() {
@@ -94,5 +87,31 @@ public final class Jobs extends JavaPlugin implements Listener {
 
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new JobSelectGuiListener(), this);
+    }
+    private void Messages(){
+        messageyml = new MessageConfigYML();
+        messageHandler = new MessagesHandle();
+        sqlConnectionYML = new SqlConnectionYML();
+        guiConfigYML = new GuiConfigYML();
+    }
+    private void General(){
+        sqlConnection = new SqlConnection();
+        sqlConnection.connect();
+        final SqlJobManager sqlJobManager = new SqlJobManager(sqlConnection.getConnection());
+
+
+
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if (sqlConnection != null) {
+                    sqlConnection.attemptReconnect();
+                }
+            }
+        }.runTaskTimer(this, 0, 6000);
+        // é Placeholder api mas tá usando o banco de dados para buscar as info
+        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+            new SomeExpansion(sqlJobManager).register();
+        }
     }
 }

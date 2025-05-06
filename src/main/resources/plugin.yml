@@ -3,7 +3,10 @@ version: '1.0.0'
 main: br.com.jobs.Jobs
 api-version: '1.21'
 authors: [Erick_barb]
-description: Plugin que incrementa profissões no minecraft
+description: Ele implementa um sistema de seleção de profissões
+softdepend:
+  - ["PlaceholderAPI"]
+
 commands:
   reloadconfig:
     description: recarrega as configurações YML

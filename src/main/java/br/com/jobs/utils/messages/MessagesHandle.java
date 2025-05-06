@@ -10,6 +10,8 @@ public class MessagesHandle {
     public static final String prefix = color(cfMessage.getString("Prefix"));
     public static final String Msg_NoPermission = color(cfMessage.getString("NoPermission"));
     public static final String Msg_Target_Error = color(cfMessage.getString("Msg_Target_Error"));
+    public static final String hasPermission_true = color(cfMessage.getString("Placeholder.hasPermission_true", "TRUE"));
+    public static final String hasPermission_false = color(cfMessage.getString("Placeholder.hasPermission_false", "FALSE"));
 
     public static final String Msg_command_Error = color(cfMessage.getString("Msg_Command_Error"));
     public static final String Msg_ReloadConfigDB = color(cfMessage.getString("Database.Msg_ReloadConfigDB"));

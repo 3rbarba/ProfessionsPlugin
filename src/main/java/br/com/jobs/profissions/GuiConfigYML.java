@@ -24,7 +24,6 @@ public class GuiConfigYML {
             }
             infoLoggers(Msg_Command_ReloadConfigGuiYML_Create);
         }
-
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
         loadConfig();
     }
@@ -32,7 +31,6 @@ public class GuiConfigYML {
     public FileConfiguration getConfig() {
         return fileConfiguration;
     }
-
 
     public void saveConfig() {
         try {
@@ -42,14 +40,10 @@ public class GuiConfigYML {
             e.printStackTrace();
         }
     }
-
-
     public void reloadConfig() {
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
         infoLoggers(Msg_ReloadConfigGuiYML);
     }
-
-
     private void loadConfig() {
         FileConfiguration config = getConfig();
 
@@ -59,23 +53,20 @@ public class GuiConfigYML {
 
             ConfigurationSection items = guiSection.createSection("items");
 
-            createItem(items, "archer", 12, "BOW", "§aArqueiro", "§7Uma profissão focada em ataques de longa distância.", "§7Especialista em combate com arco.");
-            createItem(items, "enchanter", 13, "ENCHANTING_TABLE", "§bEncantador", "§7Você é o mestre da magia.", "§7Encante itens como nenhum outro.");
-            createItem(items, "lumberjack", 14, "IRON_AXE", "§6Lenhador", "§7Profissão ideal para cortar árvores", "§7Ajude a coletar madeira para sobrevivência.");
-            createItem(items, "farmer", 20, "WHEAT", "§2Fazendeiro", "§7Agricultura para todos.", "§7Cultive e colha para sustentar seu time.");
-            createItem(items, "fisherman", 21, "FISHING_ROD", "§3Pescador", "§7A pesca é uma arte.", "§7Conquiste os mares.");
-            createItem(items, "miner", 22, "DIAMOND_PICKAXE", "§9Mineiro", "§7Subterrâneo, o reino dos mineiros.", "§7Encontre minerais valiosos.");
-            createItem(items, "tank", 23, "DIAMOND_CHESTPLATE", "§eTanque", "§7Sustente o dano pelo grupo.", "§7Perfeito para defesa.");
-            createItem(items, "agility", 24, "FEATHER", "§fAgilidade", "§7Movimento rápido é sua vantagem.", "§7Evite ataques com rapidez.");
-            createItem(items, "warrior", 30, "IRON_SWORD", "§cGuerreiro", "§7Lute de frente.", "§7Profissão para combatentes.");
-            createItem(items, "alchemist", 31, "BREWING_STAND", "§5Alquimista", "§7Misture líquidos misteriosos.", "§7Proporcione novas possibilidades ao time.");
-            createItem(items, "excavator", 32, "GOLDEN_SHOVEL", "§6Escavador", "§7Remova areia e cascalho rápido.", "§7Descubra tesouros enterrados.");
-
+            createItem(items, "archer", 12, "BOW", "&aArqueiro", "Uma profissão focada em ataques de longa distância.", "Especialista em combate com arco.");
+            createItem(items, "enchanter", 13, "ENCHANTING_TABLE", "&bEncantador", "Você é o mestre da magia.", "Encante itens como nenhum outro.");
+            createItem(items, "lumberjack", 14, "IRON_AXE", "&6Lenhador", "Profissão ideal para cortar árvores", "Ajude a coletar madeira para sobrevivência.");
+            createItem(items, "farmer", 20, "WHEAT", "&2Fazendeiro", "Agricultura para todos.", "Cultive e colha para sustentar seu time.");
+            createItem(items, "fisherman", 21, "FISHING_ROD", "&3Pescador", "A pesca é uma arte.", "Conquiste os mares.");
+            createItem(items, "miner", 22, "DIAMOND_PICKAXE", "&9Mineiro", "Subterrâneo, o reino dos mineiros.", "Encontre minerais valiosos.");
+            createItem(items, "tank", 23, "DIAMOND_CHESTPLATE", "&eTanque", "Sustente o dano pelo grupo.", "Perfeito para defesa.");
+            createItem(items, "agility", 24, "FEATHER", "&fAgilidade", "Movimento rápido é sua vantagem.", "Evite ataques com rapidez.");
+            createItem(items, "warrior", 30, "IRON_SWORD", "&cGuerreiro", "Lute de frente.", "Profissão para combatentes.");
+            createItem(items, "alchemist", 31, "BREWING_STAND", "&5Alquimista", "&7Misture líquidos misteriosos.", "Proporcione novas possibilidades ao time.");
+            createItem(items, "excavator", 32, "GOLDEN_SHOVEL", "&6Escavador", "Remova areia e cascalho rápido.", "Descubra tesouros enterrados.");
             saveConfig();
         }
     }
-
-
     private void createItem(ConfigurationSection parent, String key, int slot, String material, String displayName, String... lore) {
         ConfigurationSection itemSection = parent.createSection(key);
         itemSection.set("slot", slot);

@@ -1,6 +1,7 @@
 package br.com.jobs.sql;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
 import static br.com.jobs.utils.TextUtils.warnLoggers;
@@ -27,6 +28,7 @@ public class SqlJobManager {
             e.printStackTrace();
         }
     }
+
     public boolean hasPlayer(UUID uuid) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM jobs WHERE uuid = ?");
@@ -37,6 +39,7 @@ public class SqlJobManager {
             return false;
         }
     }
+
     public boolean hasProfission(String profession) {
         try {
             PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM jobs WHERE uuid = ? AND profession IS NOT NULL");
@@ -45,5 +48,20 @@ public class SqlJobManager {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
+        }
     }
-}}
+    public String getPlayerProfession(UUID playerUUID) {
+        String query = "SELECT profession FROM jobs WHERE uuid = ?";
+        try (PreparedStatement stmt = connection.prepareStatement(query)) {
+            stmt.setString(1, playerUUID.toString());
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getString("profession");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+}
