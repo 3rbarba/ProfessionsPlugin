@@ -132,7 +132,7 @@ public class JobSelectGuiListener implements Listener {
         jobManager.setPlayerProfession(player.getUniqueId(), player.getName(), jobKey);
 
         sendPlayerMessage(player, Msg_Command_JobsSelect_SelectProfission + displayName);
-        Player p = (Player) player;
+        Player p = player;
         p.playSound(p.getLocation(), Sound.ENTITY_PLAYER_LEVELUP, 1, 1);
         player.closeInventory();
     }

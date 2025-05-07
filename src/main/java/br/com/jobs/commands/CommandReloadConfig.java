@@ -51,7 +51,7 @@ public class CommandReloadConfig implements CommandExecutor {
                         return true;
                     case "guiconfig":
                         new GuiConfigYML().reloadConfig();
-                        sendPlayerMessage(sender, Msg_db_sucess); // Substitua por mensagem apropriada, se desejar
+                        sendPlayerMessage(sender, Msg_db_sucess);
                         return true;
                     default:
                         sendPlayerMessage(sender, Msg_Sintax_Error);

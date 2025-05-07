@@ -39,9 +39,7 @@ public class CommandJobs implements CommandExecutor {
 
             sendPlayerMessage(sender, Msg_command_Jobsreloadusage);
             return true;
-
-        } catch (ArrayIndexOutOfBoundsException e) {
-            sendConsoleMessage(Msg_command_Error + e.getMessage());
+            
         } catch (Exception e) {
             sendConsoleMessage(Msg_command_Error + e.getMessage());
         }

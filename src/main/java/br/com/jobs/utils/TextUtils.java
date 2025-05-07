@@ -32,7 +32,7 @@ public class TextUtils{
     }
     public static String removeColors(String msg) {
         String msgmodif = msg;
-        if (msgmodif.contains("§") || msgmodif.contains("&") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2, msgmodif.length());
+        if (msgmodif.contains("§") || msgmodif.contains("&") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
         return msgmodif;
     }
 }

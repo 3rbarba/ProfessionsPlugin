@@ -4,9 +4,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
+import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TabComplete implements TabCompleter {
 
@@ -14,17 +16,17 @@ public class TabComplete implements TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command cmd, String alias, String[] args) {
         switch (cmd.getName().toLowerCase()) {
             case "reloadconfig":
-                return handleReloadConfig(args);
+                return SugestReloadConfig(args);
             case "jobs":
-                return handleJobs(args);
+                    return SugestJobs(args);
             case "profession":
-                return handleProfession(sender, args);
+                return SugestProfession(sender, args);
             default:
                 return new ArrayList<>();
         }
     }
 
-    private List<String> handleReloadConfig(String[] args) {
+    private List<String> SugestReloadConfig(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
             suggestions.add("database");
@@ -34,22 +36,27 @@ public class TabComplete implements TabCompleter {
         return suggestions;
     }
 
-    private List<String> handleJobs(String[] args) {
+    private List<String> SugestJobs(String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1) {
-            suggestions.add("reload");
+            suggestions.add("reload"); // Adiciona o argumento 'reload'
+            suggestions.add(""); // Adiciona uma string vazia
         }
         return suggestions;
     }
 
-    private List<String> handleProfession(CommandSender sender, String[] args) {
+    private List<String> SugestProfession(CommandSender sender, String[] args) {
         List<String> suggestions = new ArrayList<>();
         if (args.length == 1 && sender.hasPermission("jobs.profession.others")) {
-            Bukkit.getOnlinePlayers()
-                    .stream()
-                    .map(player -> player.getName())
-                    .filter(name -> args.length == 0 || name.toLowerCase().startsWith(args[0].toLowerCase()))
-                    .forEach(suggestions::add);
+            if (sender instanceof Player) {
+                String prefix = args[0].toLowerCase();
+                suggestions.addAll(
+                        Bukkit.getOnlinePlayers().stream()
+                                .map(Player::getName)
+                                .filter(name -> name.toLowerCase().startsWith(prefix))
+                                .collect(Collectors.toList())
+                );
+            }
         }
         return suggestions;
     }

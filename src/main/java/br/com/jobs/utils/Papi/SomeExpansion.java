@@ -48,12 +48,12 @@ public class SomeExpansion extends PlaceholderExpansion {
             String jobName = sqlJobManager.getPlayerProfession(targetPlayer.getUniqueId());
 
             if (jobName == null) {
-                return "No Profession";
+                return "";
             }
             String displayName = Jobs.getGuiConfigYML().getConfig().getString("gui.items." + jobName + ".display_name", "Profissão desconhecida");
 
             return displayName.toUpperCase();
         }
-        return "Error";
+        return "";
     }
 }

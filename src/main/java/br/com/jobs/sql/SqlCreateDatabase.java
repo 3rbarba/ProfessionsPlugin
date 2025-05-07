@@ -1,19 +1,19 @@
 package br.com.jobs.sql;
-import org.bukkit.configuration.ConfigurationSection;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static br.com.jobs.Jobs.getSqlConnectionYML;
+import static br.com.jobs.sql.SqlJobManager.cf;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class SqlCreateDatabase {
-    ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
     private final Connection connection;
     private final String database;
+    private final String table;
 
     public SqlCreateDatabase(Connection connection) {
-        this.database = cf != null ? cf.getString("DATABASE", "jobs") : "jobs";
+        this.database = cf != null ? cf.getString("DATABASE", "professions") : "professions";
+        this.table = cf != null ? cf.getString("TABLE", "jobs") : "jobs";
         this.connection = connection;
     }
 
@@ -31,17 +31,17 @@ public class SqlCreateDatabase {
     }
 
     public void createJobsTable() {
-        String sql = "CREATE TABLE IF NOT EXISTS jobs (" +
+        String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "uuid VARCHAR(36) PRIMARY KEY," +
                 "name VARCHAR(16) NOT NULL," +
                 "profession VARCHAR(32) NOT NULL" +
-                ");";
+                ");", table);
 
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
-            sendConsoleMessage(Msg_tableDB_sucess);
+            sendConsoleMessage(String.format(Msg_tableDB_sucess, table));
         } catch (SQLException e) {
-            warnLoggers(Msg_tableDB_error + e.getMessage());
+            warnLoggers(String.format(Msg_tableDB_error + e.getMessage(), table));
         }
     }
 

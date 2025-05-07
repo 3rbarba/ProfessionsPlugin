@@ -1,7 +1,7 @@
 *.gitignore
 \professions\qodana.yaml
-\test\*
-test/*
+.\test\*
+test/
 # User-specific stuff
 .idea/
 *.iml

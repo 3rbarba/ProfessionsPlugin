@@ -1,14 +1,37 @@
 package br.com.jobs.sql;
+import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+import org.bukkit.configuration.ConfigurationSection;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
+
+import static br.com.jobs.Jobs.getSqlConnectionYML;
 import static br.com.jobs.utils.TextUtils.warnLoggers;
 
 public class SqlJobManager {
-
+    public static ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
+    String default_db = cf.getString("TABLE", "jobs");
     private final Connection connection;
+    private static SqlJobManager instance;
+
+    // Método para inicializar (somente uma vez)
+    public static void init(Connection connection) {
+        if (instance == null) {
+            instance = new SqlJobManager(connection);
+        }
+    }
+
+    // Obter a instância do singleton
+    public static SqlJobManager getInstance() {
+        if (instance == null) {
+            throw new IllegalStateException("SqlJobManager não foi inicializado! Chame init() primeiro.");
+        }
+        return instance;
+    }
+
 
     public SqlJobManager(Connection connection) {
         this.connection = connection;
@@ -16,10 +39,9 @@ public class SqlJobManager {
 
     public void setPlayerProfession(UUID uuid, String name, String profession) {
         try {
-            PreparedStatement ps = connection.prepareStatement(
-                    "INSERT INTO jobs (uuid, name, profession) VALUES (?, ?, ?) " +
-                            "ON DUPLICATE KEY UPDATE name = VALUES(name), profession = VALUES(profession)"
-            );
+            String query = String.format("INSERT INTO %s (uuid, name, profession) VALUES (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE name = VALUES(name), profession = VALUES(profession)", default_db);
+            PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, uuid.toString());
             ps.setString(2, name);
             ps.setString(3, profession);
@@ -31,35 +53,35 @@ public class SqlJobManager {
 
     public boolean hasPlayer(UUID uuid) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM jobs WHERE uuid = ?");
+            String query = String.format("SELECT 1 FROM %s WHERE uuid = ?", default_db);
+            PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, uuid.toString());
             return ps.executeQuery().next();
         } catch (SQLException e) {
-            warnLoggers(e.toString());
             return false;
         }
     }
 
     public boolean hasProfission(String profession) {
         try {
-            PreparedStatement ps = connection.prepareStatement("SELECT 1 FROM jobs WHERE uuid = ? AND profession IS NOT NULL");
+            String query = String.format("SELECT 1 FROM %s WHERE uuid = ? AND profession IS NOT NULL", default_db);
+            PreparedStatement ps = connection.prepareStatement(query);
             ps.setString(1, profession);
             return ps.executeQuery().next();
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }
     public String getPlayerProfession(UUID playerUUID) {
-        String query = "SELECT profession FROM jobs WHERE uuid = ?";
-        try (PreparedStatement stmt = connection.prepareStatement(query)) {
-            stmt.setString(1, playerUUID.toString());
-            ResultSet rs = stmt.executeQuery();
+        String query = String.format("SELECT profession FROM %s WHERE uuid = ?", default_db);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, playerUUID.toString());
+            ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getString("profession");
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            warnLoggers("Error in table" + default_db);
         }
         return null;
     }

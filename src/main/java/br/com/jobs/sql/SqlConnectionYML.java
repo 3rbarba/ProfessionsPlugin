@@ -53,6 +53,7 @@ public class SqlConnectionYML {
             getConfig().set("MySql.USER", "root");
             getConfig().set("MySql.PASSWORD", "root");
             getConfig().set("MySql.DATABASE", "professions");
+            getConfig().set("MySql.TABLE", "jobs");
             saveConfig();
         }
     }

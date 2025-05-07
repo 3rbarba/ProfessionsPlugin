@@ -4,16 +4,15 @@ import org.bukkit.configuration.ConfigurationSection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import static br.com.jobs.Jobs.getSqlConnectionYML;
+import static br.com.jobs.sql.SqlJobManager.cf;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class SqlConnection {
-
     private Connection connection;
 
     public void connect() {
-        ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
+
 
         if (cf == null) {
             sendConsoleMessage(Msg_NoFoundDB_file);
@@ -25,7 +24,6 @@ public class SqlConnection {
         String port = cf.getString("PORT");
         String user = cf.getString("USER");
         String pass = cf.getString("PASSWORD");
-
         if (host == null || user == null || pass == null || port == null) {
             warnLoggers(Msg_IncorretFieldsDB);
             return;

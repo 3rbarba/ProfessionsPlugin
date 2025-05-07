@@ -72,8 +72,8 @@ public class MessageConfigYML {
             getConfig().set("Messages.Database.Msg_command_ConnectDB", "&aReconectando ao banco de dados.");
             getConfig().set("Messages.Database.Msg_db_success", "&aDatabase %s criada/verificada com sucesso.");
             getConfig().set("Messages.Database.Msg_db_error", "&cErro ao criar/verificar a database '%s': ");
-            getConfig().set("Messages.Database.Msg_tableDB_success", "&aTabela jobs_data criada/verificada com sucesso.");
-            getConfig().set("Messages.Database.Msg_tableDB_error", "&cErro ao criar/verificar a tabela jobs_data: ");
+            getConfig().set("Messages.Database.Msg_tableDB_success", "&aTabela %s criada/verificada com sucesso.");
+            getConfig().set("Messages.Database.Msg_tableDB_error", "&cErro ao criar/verificar a tabela %s: ");
             getConfig().set("Messages.Database.Msg_CreationFileDB_success", "&2Database.yml foi criado com sucesso.");
             getConfig().set("Messages.Database.Msg_SaveFileDB_Error", "&cErro ao salvar o arquivo Database.yml.");
             getConfig().set("Messages.Database.Msg_ReloadConfigDB", "&2Database.yml foi recarregado com sucesso.");
@@ -91,11 +91,11 @@ public class MessageConfigYML {
             getConfig().set("Messages.Commands.ReloadConfig.Msg_Command_ReloadConfigGuiYML_Create", "&2Arquivo ConfigGUI.yml criado com sucesso.");
             getConfig().set("Messages.Commands.ReloadConfig.Msg_Command_ReloadConfigGuiYML_Create_Error", "&cErro ao criar o arquivo ConfigGUI.yml. Verifique os logs.");
 
-            getConfig().set("Messages.Commands.Jobs.Msg_Command_JobsReloadUsage", "&cUso correto: /jobsreload");
+            getConfig().set("Messages.Commands.Jobs.Msg_Command_JobsReloadUsage", "&cUso correto: /jobs reload");
             getConfig().set("Messages.Commands.Jobs.Msg_Command_JobsReload", "&2Plugin reiniciado com sucesso.");
 
             getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_InvalidGui", "§cAs configurações da GUI estão inválidas. Informe um administrador.");
-            getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_SelectProfission", "§aVocê selecionou a profissão: §e");
+            getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_SelectProfission", "§aVocê selecionou a profissão: ");
             getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_InvalidMaterial", "§cO material selecionado é inválido. Informe um administrador.");
 
 

@@ -75,12 +75,12 @@ A maioria das mensagens do plugin está no arquivo 'Message.yml'. Fique à vonta
                 Msg_command_ConnectDB: '&aReconectando ao banco de dados.'
                 Msg_db_success: '&aDatabase %s criada/verificada com sucesso.'
                 Msg_db_error: '&cErro ao criar/verificar a database ''%s'': '
-                Msg_tableDB_success: '&aTabela jobs_data criada/verificada com sucesso.'
-                Msg_tableDB_error: '&cErro ao criar/verificar a tabela jobs_data: '
+                Msg_tableDB_success: '&aTabela %s criada/verificada com sucesso.'
+                Msg_tableDB_error: '&cErro ao criar/verificar a tabela %s: '
                 Msg_CreationFileDB_success: '&2Database.yml foi criado com sucesso.'
                 Msg_SaveFileDB_Error: '&cErro ao salvar o arquivo Database.yml.'
                 Msg_ReloadConfigDB: '&2Database.yml foi recarregado com sucesso.'
-                File:
+            File:
                 Msg_Error_Saved: '&cNão foi possível salvar o arquivo messages.yml.'
                 Msg_FileCreated: '&2O arquivo messages.yml foi criado com sucesso.'
                 Msg_Error_Creation: '&cErro ao criar o arquivo ''messages.yml'': '
@@ -99,14 +99,15 @@ A maioria das mensagens do plugin está no arquivo 'Message.yml'. Fique à vonta
                     Msg_Command_ReloadConfigGuiYML_Create_Error: '&cErro ao criar o arquivo ConfigGUI.yml.
                     Verifique os logs.'
                 Jobs:
-                    Msg_Command_JobsReloadUsage: '&cUso correto: /jobsreload'
+                    Msg_Command_JobsReloadUsage: '&cUso correto: /jobs reload'
                     Msg_Command_JobsReload: '&2Plugin reiniciado com sucesso.'
                 JobsSelect:
                     Msg_Command_JobsSelect_InvalidGui: §cAs configurações da GUI estão inválidas.
                     Informe um administrador.
-                    Msg_Command_JobsSelect_SelectProfission: '§aVocê selecionou a profissão: §e'
+                    Msg_Command_JobsSelect_SelectProfission: '§aVocê selecionou a profissão: '
                     Msg_Command_JobsSelect_InvalidMaterial: §cO material selecionado é inválido.
                     Informe um administrador.
+
 
 
   <!-- Lembrar de verificar se está atualizado última atualização 05/05 -->
