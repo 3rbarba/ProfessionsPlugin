@@ -46,9 +46,10 @@
 
 ## Placeholders
 
-    - %hasProfission_player_(Nick)% - Se o player não tiver nenhuma profissão retorna false, se tem
+    - %hasProfission_player_(nick)% - Se o player não tiver nenhuma profissão retorna false, se tem
         retorna true. Configuravél no Message.YML
-    - %professions_jobName_player_(Nick)% - retorna a profissão do player
+    - %professions_jobName_player_(nick)% - retorna a profissão do player
+    - %hasWorking_player_(nick)% - retorna 
 
 
 ## Mensagens

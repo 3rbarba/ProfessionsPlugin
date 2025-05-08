@@ -34,9 +34,9 @@ public class SqlCreateDatabase {
         String sql = String.format("CREATE TABLE IF NOT EXISTS %s (" +
                 "uuid VARCHAR(36) PRIMARY KEY," +
                 "name VARCHAR(16) NOT NULL," +
-                "profession VARCHAR(32) NOT NULL" +
-                ");", table);
-
+                "profession VARCHAR(32) NOT NULL," +
+                "working VARCHAR(5) NOT NULL DEFAULT 'false'" +
+                ")", table);
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);
             sendConsoleMessage(String.format(Msg_tableDB_sucess, table));

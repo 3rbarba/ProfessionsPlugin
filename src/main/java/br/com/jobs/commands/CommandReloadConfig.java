@@ -2,6 +2,7 @@ package br.com.jobs.commands;
 
 import br.com.jobs.profissions.GuiConfigYML;
 import br.com.jobs.sql.SqlConnectionYML;
+import br.com.jobs.sql.SqlJobManager;
 import br.com.jobs.utils.messages.MessageConfigYML;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -9,17 +10,19 @@ import org.bukkit.command.CommandSender;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
+import java.util.List;
 
 import static br.com.jobs.Jobs.getSqlConnection;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class CommandReloadConfig implements CommandExecutor {
-    private final String[] commandAliases = {"reloadconfig", "rlc"};
+    private final List<String> commandAliases = Arrays.asList("reloadconfig", "rlc");
+
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
-        if (!Arrays.asList(commandAliases).contains(cmd.getName().toLowerCase())) return false;
+        if (!commandAliases.contains(cmd.getName().toLowerCase())) return false;
 
         try {
             if (!sender.hasPermission("Jobs.reloadconfig")) {

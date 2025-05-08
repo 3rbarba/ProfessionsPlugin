@@ -41,9 +41,9 @@ public final class Jobs extends JavaPlugin implements Listener {
         Messages();
         General();
 
-        registerTab();
-        registerCommands();
         registerEvents();
+        registerCommands();
+        registerTab();
     }
 
     @Override
@@ -52,8 +52,6 @@ public final class Jobs extends JavaPlugin implements Listener {
             sqlConnection.disconnect();
         }
     }
-
-
     public static Jobs getInstance() {
         return instance;
     }
@@ -83,20 +81,6 @@ public final class Jobs extends JavaPlugin implements Listener {
         getCommand("reloadconfig").setTabCompleter(new TabComplete());
     }
 
-    private void registerCommands() {
-        getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
-        getCommand("profission").setExecutor(new CommandJobSelect());
-        getCommand("jobs").setExecutor(new CommandJobs());
-        getCommand("working").setExecutor(new CommandWorking());
-        getCommand("teste").setExecutor(new teste());//todo retirar aqui e no plugin.YML
-    }
-
-    private void registerEvents() {
-        Bukkit.getPluginManager().registerEvents(new JobSelectGuiListener(), this);
-        Bukkit.getPluginManager().registerEvents(new minerGuiListener(), this);
-        Bukkit.getPluginManager().registerEvents(new pickaxeObject(), this);
-        Bukkit.getPluginManager().registerEvents(new break1x2(), this);
-    }
     private void Messages(){
         messageyml = new MessageConfigYML();
         messageHandler = new MessagesHandle();
@@ -106,12 +90,13 @@ public final class Jobs extends JavaPlugin implements Listener {
         minerYML = new MinerYML();
         minerYML.initialize();
     }
+
     private void General(){
+        //Database
         sqlConnection = new SqlConnection();
         sqlConnection.connect();
-        final SqlJobManager sqlJobManager = new SqlJobManager(sqlConnection.getConnection());
         SqlJobManager.init(sqlConnection.getConnection());
-
+        SqlJobManager sqlJobManager = new SqlJobManager(sqlConnection.getConnection());
 
 
         new BukkitRunnable() {
@@ -122,9 +107,22 @@ public final class Jobs extends JavaPlugin implements Listener {
                 }
             }
         }.runTaskTimer(this, 0, 6000);
-        // é Placeholder api mas tá usando o banco de dados para buscar as info
+        // PlaceholderAPI
         if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
             new SomeExpansion(sqlJobManager).register();
         }
+    }
+    private void registerEvents() {
+        Bukkit.getPluginManager().registerEvents(new JobSelectGuiListener(), this);
+        Bukkit.getPluginManager().registerEvents(new minerGuiListener(), this);
+        Bukkit.getPluginManager().registerEvents(new pickaxeObject(), this);
+        Bukkit.getPluginManager().registerEvents(new break1x2(), this);
+    }
+    private void registerCommands() {
+        getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
+        getCommand("profission").setExecutor(new CommandJobSelect());
+        getCommand("jobs").setExecutor(new CommandJobs());
+        getCommand("working").setExecutor(new CommandWorking());
+        getCommand("teste").setExecutor(new teste());//todo retirar aqui e no plugin.YML
     }
 }
