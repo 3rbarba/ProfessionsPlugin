@@ -35,7 +35,7 @@ public class SqlCreateDatabase {
                 "uuid VARCHAR(36) PRIMARY KEY," +
                 "name VARCHAR(16) NOT NULL," +
                 "profession VARCHAR(32) NOT NULL," +
-                "working VARCHAR(5) NOT NULL DEFAULT 'false'" +
+                "working VARCHAR(5) NOT NULL DEFAULT false" +
                 ")", table);
         try (Statement statement = connection.createStatement()) {
             statement.executeUpdate(sql);

@@ -1,5 +1,5 @@
 package br.com.jobs.sql;
-import com.mysql.cj.jdbc.exceptions.CommunicationsException;
+
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.sql.Connection;
@@ -17,22 +17,17 @@ public class SqlJobManager {
     private final Connection connection;
     private static SqlJobManager instance;
 
-    // Método para inicializar (somente uma vez)
     public static void init(Connection connection) {
         if (instance == null) {
             instance = new SqlJobManager(connection);
         }
     }
-
-    // Obter a instância do singleton
     public static SqlJobManager getInstance() {
         if (instance == null) {
-            throw new IllegalStateException("SqlJobManager não foi inicializado! Chame init() primeiro.");
+            throw new IllegalStateException("Null SQLManager instance");
         }
         return instance;
     }
-
-
     public SqlJobManager(Connection connection) {
         this.connection = connection;
     }
@@ -47,10 +42,20 @@ public class SqlJobManager {
             ps.setString(3, profession);
             ps.executeUpdate();
         } catch (SQLException e) {
-            e.printStackTrace();
+            warnLoggers("Error in table: " + default_db);
         }
     }
-
+    public void setPlayerWorking(UUID uuid, String working) {
+        try {
+            String query = String.format("UPDATE %s SET working = ? WHERE uuid = ?", default_db);
+            PreparedStatement ps = connection.prepareStatement(query);
+            ps.setString(1, working.toString());
+            ps.setString(2, uuid.toString());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            warnLoggers("Error in table: setWorking" + default_db + ": " + e.getMessage());
+        }
+    }
     public boolean hasPlayer(UUID uuid) {
         try {
             String query = String.format("SELECT 1 FROM %s WHERE uuid = ?", default_db);
@@ -61,7 +66,6 @@ public class SqlJobManager {
             return false;
         }
     }
-
     public boolean hasProfission(String profession) {
         try {
             String query = String.format("SELECT 1 FROM %s WHERE uuid = ? AND profession IS NOT NULL", default_db);
@@ -72,6 +76,19 @@ public class SqlJobManager {
             return false;
         }
     }
+    public String hasWoking(UUID playerUUID) {
+        String query = String.format("SELECT working FROM %s WHERE uuid = ?", default_db);
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, playerUUID.toString());
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getString("working");
+            }
+        } catch (Exception e) {
+            warnLoggers("Error in table: hasWorking in " + default_db);
+        }
+        return null;
+    }
     public String getPlayerProfession(UUID playerUUID) {
         String query = String.format("SELECT profession FROM %s WHERE uuid = ?", default_db);
         try (PreparedStatement ps = connection.prepareStatement(query)) {
@@ -81,7 +98,7 @@ public class SqlJobManager {
                 return rs.getString("profession");
             }
         } catch (Exception e) {
-            warnLoggers("Error in table" + default_db);
+            warnLoggers("Error in table: " + default_db);
         }
         return null;
     }

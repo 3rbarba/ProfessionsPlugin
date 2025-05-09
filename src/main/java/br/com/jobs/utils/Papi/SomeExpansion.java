@@ -65,7 +65,7 @@ public class SomeExpansion extends PlaceholderExpansion {
             String hasWorking = sqlJobManager.hasWoking(targetPlayer.getUniqueId());
 
             if (hasWorking == null || hasWorking.isEmpty() || hasWorking.equalsIgnoreCase("false")) {
-                return "folgado";/* todo trocar para message.yml*/
+                return "folgando";/* todo trocar para message.yml*/
             } else {
                 return "trabalhando";
             }

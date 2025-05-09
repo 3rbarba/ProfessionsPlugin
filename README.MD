@@ -49,7 +49,8 @@
     - %hasProfission_player_(nick)% - Se o player não tiver nenhuma profissão retorna false, se tem
         retorna true. Configuravél no Message.YML
     - %professions_jobName_player_(nick)% - retorna a profissão do player
-    - %hasWorking_player_(nick)% - retorna 
+    - %professions_hasWorking_player_(nick)% - retorna se o status de "trabalhando" do comando /trabalhar
+        se está false ou true. Configuravél no Message.YML
 
 
 ## Mensagens
