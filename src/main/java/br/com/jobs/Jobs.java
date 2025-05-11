@@ -5,9 +5,10 @@ import br.com.jobs.commands.CommandReloadConfig;
 import br.com.jobs.commands.CommandWorking;
 import br.com.jobs.profissions.GuiConfigYML;
 import br.com.jobs.profissions.JobSelectGuiListener;
-import br.com.jobs.profissions.miner.break1x2;
-import br.com.jobs.profissions.miner.minerGuiListener;
-import br.com.jobs.profissions.miner.pickaxeObject;
+import br.com.jobs.profissions.miner.BreakArea;
+import br.com.jobs.profissions.miner.BreakAreaGUI;
+import br.com.jobs.profissions.miner.MinerGuiListener;
+import br.com.jobs.profissions.miner.PickaxeObject;
 import br.com.jobs.profissions.professionsConfigYML.ProfessionsFile;
 import br.com.jobs.profissions.professionsConfigYML.MinerYML;
 import br.com.jobs.sql.SqlConnection;
@@ -17,6 +18,7 @@ import br.com.jobs.utils.Papi.SomeExpansion;
 import br.com.jobs.utils.TabComplete;
 import br.com.jobs.utils.messages.MessageConfigYML;
 import br.com.jobs.utils.messages.MessagesHandle;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -44,6 +46,7 @@ public final class Jobs extends JavaPlugin implements Listener {
         registerEvents();
         registerCommands();
         registerTab();
+        //bStats();
     }
 
     @Override
@@ -60,10 +63,7 @@ public final class Jobs extends JavaPlugin implements Listener {
         return messageyml;
     }
 
-
-    public static SqlConnectionYML getSqlConnectionYML() {
-        return sqlConnectionYML;
-    }
+    public static SqlConnectionYML getSqlConnectionYML() {return sqlConnectionYML;}
 
     public static GuiConfigYML getGuiConfigYML() {
         return guiConfigYML;
@@ -114,9 +114,10 @@ public final class Jobs extends JavaPlugin implements Listener {
     }
     private void registerEvents() {
         Bukkit.getPluginManager().registerEvents(new JobSelectGuiListener(), this);
-        Bukkit.getPluginManager().registerEvents(new minerGuiListener(), this);
-        Bukkit.getPluginManager().registerEvents(new pickaxeObject(), this);
-        Bukkit.getPluginManager().registerEvents(new break1x2(), this);
+        Bukkit.getPluginManager().registerEvents(new MinerGuiListener(), this);
+        Bukkit.getPluginManager().registerEvents(new PickaxeObject(), this);
+        Bukkit.getPluginManager().registerEvents(new BreakArea(), this);
+        Bukkit.getPluginManager().registerEvents(new BreakAreaGUI(), this);
     }
     private void registerCommands() {
         getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
@@ -125,4 +126,9 @@ public final class Jobs extends JavaPlugin implements Listener {
         getCommand("working").setExecutor(new CommandWorking());
         getCommand("teste").setExecutor(new teste());//todo retirar aqui e no plugin.YML
     }
+    private void bStats(){
+        int pluginId = 25814;
+        Metrics metrics = new Metrics(this, pluginId);
+    }
+
 }

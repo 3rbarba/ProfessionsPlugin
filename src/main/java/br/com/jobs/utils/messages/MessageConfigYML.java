@@ -7,6 +7,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static br.com.jobs.utils.messages.MessagesInit.*;
 
@@ -54,13 +56,21 @@ public class MessageConfigYML {
 
     private void loadConfig() {
         if (getConfig().getConfigurationSection("Messages") == null) {
-
+            List<String> header = new ArrayList<>();
+            header.add(" -------------------------------------------------------");
+            header.add("|                      Messages.yml                     |");
+            header.add("|                      Português-BR                     |");
+            header.add(" -------------------------------------------------------");
+            getConfig().options().setHeader(header);
             getConfig().set("Messages.Prefix", "&6[Professions] ");
             getConfig().set("Messages.NoPermission", "&cVocê não tem permissão para usar este comando!");
             getConfig().set("Messages.Msg_Command_Error", "&cOcorreu um erro ao executar este comando.");
             getConfig().set("Messages.Msg_Target_Error", "&c'%s' não é um jogador.");
+
             getConfig().set("Messages.Placeholder.hasPermission_false", "False");
             getConfig().set("Messages.Placeholder.hasPermission_true", "True");
+            getConfig().set("Messages.Placeholder.hasWorking_false", "Folgando");
+            getConfig().set("Messages.Placeholder.hasWorking_true", "Trabalhando");
 
             getConfig().set("Messages.Database.Msg_NoFoundDB_file", "&2Arquivo SqlConection não encontrado.");
             getConfig().set("Messages.Database.Msg_connectionDB_success", "&aConexão com o banco de dados estabelecida com sucesso.");
@@ -97,6 +107,13 @@ public class MessageConfigYML {
             getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_InvalidGui", "§cAs configurações da GUI estão inválidas. Informe um administrador.");
             getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_SelectProfission", "§aVocê selecionou a profissão: ");
             getConfig().set("Messages.Commands.JobsSelect.Msg_Command_JobsSelect_InvalidMaterial", "§cO material selecionado é inválido. Informe um administrador.");
+
+            getConfig().set("Messages.Commands.Working.Msg_Command_Working_Execute_error", "&cOcorreu um erro ao executar este comando. Tente novamente. Se o erro persistir, entre em contato com um administrador.");
+            getConfig().set("Messages.Commands.Working.Msg_Command_Working_NoJob", "&cVocê ainda não escolheu uma profissão. digite /jobselect");
+            getConfig().set("Messages.Commands.Working.Msg_Command_Working_EmptyHand", "&cEsvazie sua mão primeiro");
+            getConfig().set("Messages.Commands.Working.Msg_Command_Working_Start", "&aTrabalhando");
+            getConfig().set("Messages.Commands.Working.Msg_Command_Working_End", "&aVocê não está mais trabalhando.");
+
 
 
             saveConfig();

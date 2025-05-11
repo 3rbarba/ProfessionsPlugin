@@ -20,34 +20,34 @@ public class CommandJobSelect implements CommandExecutor {
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command cmd, @NotNull String label, @NotNull String[] args) {
 
-        if (!(sender instanceof Player executor)) {
+        if (!(sender instanceof Player)) {
             sendPlayerMessage(sender, Msg_NoPermission);
             return true;
         }
-        Player target = executor;
+        Player player = (Player) sender;
 
         try {
             SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
-            UUID executorUUID = executor.getUniqueId();
+            UUID executorUUID = player.getUniqueId();
 
-            if (jobManager.hasProfission(executorUUID.toString()) && !executor.hasPermission("jobs.jobselect.others")) {
-                sendPlayerMessage(executor, Msg_command_Error);
+            if (jobManager.hasProfission(executorUUID.toString()) && !player.hasPermission("jobs.jobselect.others")) {
+                sendPlayerMessage(player, Msg_command_Error);
                 return true;
             }
             if (args.length == 1) {
-                if (!executor.hasPermission("jobs.jobselect.others")) {
-                    sendPlayerMessage(executor, Msg_NoPermission);
+                if (!player.hasPermission("jobs.jobselect.others")) {
+                    sendPlayerMessage(player, Msg_NoPermission);
                     return true;
                 }
-                target = Bukkit.getPlayerExact(args[0]);
+                player = Bukkit.getPlayerExact(args[0]);
 
-                if (target == null) {
-                    sendPlayerMessage(executor, Msg_Target_Error);
+                if (player == null) {
+                    sendPlayerMessage(player, Msg_Target_Error);
                     return true;
                 }
             }
 
-            JobSelectGuiListener.openGUI(target);
+            JobSelectGuiListener.openGUI(player);
             return true;
 
         } catch (Exception e) {

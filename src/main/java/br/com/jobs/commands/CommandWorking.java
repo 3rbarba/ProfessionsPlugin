@@ -1,25 +1,24 @@
 package br.com.jobs.commands;
-
 import br.com.jobs.Jobs;
-import br.com.jobs.profissions.miner.pickaxeObject;
+import br.com.jobs.profissions.miner.PickaxeObject;
 import br.com.jobs.sql.SqlJobManager;
+import net.md_5.bungee.api.ChatMessageType;
+import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Arrays;
 import java.util.List;
-import java.util.UUID;
 
+import static br.com.jobs.utils.TextUtils.sendMessageActionbar;
 import static br.com.jobs.utils.TextUtils.sendPlayerMessage;
-import static br.com.jobs.utils.messages.MessagesHandle.Msg_NoPermission;
+import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class CommandWorking implements CommandExecutor {
-    // todo ajustar as mensagens
-    //Ainda será refatorado
+
     private final List<String> commandAliases = Arrays.asList("working", "trabalhar");
 
     @Override
@@ -39,21 +38,28 @@ public class CommandWorking implements CommandExecutor {
             noJob(player);
             return true;
         }
-        if (player.getInventory().contains(pickMiner)) {
-            if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("true")) {
+        if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("true")) {
+            if (player.getInventory().contains(pickMiner)) {
                 stopWorking(player);
+            } else {
+                setPlayerWorking(player, "false");
+                sendPlayerMessage(player, Msg_Command_Working_Execute_error);
             }
-        } else if (!player.getInventory().contains(pickMiner)) {
-            if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("false")) {
+        } else if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("false")) {
+            if (!player.getInventory().contains(pickMiner)){
                 startWorking(player);
+            }else{
+                setPlayerWorking(player, "true");
+                sendPlayerMessage(player, Msg_Command_Working_Execute_error);
             }
         } else if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("null")) {
             //Só pra lembrar o de fazer o tratamento desse null
         } else {
-            sendPlayerMessage(player, "Erro ao executar esse comando, procure um adminstrador");
+            sendPlayerMessage(player, Msg_Command_Working_Execute_error);
         }
         return true;
     }
+
     SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
 
 
@@ -61,32 +67,31 @@ public class CommandWorking implements CommandExecutor {
         try {
             return jobManager.hasProfission(player.getUniqueId().toString());
         } catch (Exception e) {
-            player.sendMessage("§cErro no isPlayerSetToWork()");
-            e.printStackTrace();//todo remover
+            player.sendMessage(Msg_Command_Working_Execute_error);
             return false;
         }
     }
 
     private void noJob(Player player) {
-        sendPlayerMessage(player, "§eVocê ainda não escolheu uma profissão. digite /jobselect");
+        sendPlayerMessage(player, Msg_Command_Working_NoJob);
     }
 
-    pickaxeObject pickaxeManager = new pickaxeObject();
+    PickaxeObject pickaxeManager = new PickaxeObject();
     ItemStack pickMiner = pickaxeManager.createPickMiner();
 
     private void startWorking(Player player) {
         switch (SqlJobManager.getInstance().getPlayerProfession(player.getUniqueId())) {
             case "miner":
                 if (!player.getItemInHand().getType().isAir()) {
-                    sendPlayerMessage(player, "Esvazie sua mão primeiro");
+                    sendPlayerMessage(player, Msg_Command_Working_EmptyHand);
                 } else {
-                    SqlJobManager.getInstance().setPlayerWorking(player.getUniqueId(), "true");//colocar exeption nesse set true para se por um acaso der erro no database não bugar
+                    setPlayerWorking(player, "true");//colocar exeption nesse set true para se por um acaso der erro no database não bugar
                     player.getInventory().setItemInMainHand(pickMiner);
-                    sendPlayerMessage(player, "Você está trabalhando"/* colocar o nome da profissão do guiconfigyml*/);
+                    sendMessageActionbar(player, Msg_Command_Working_Start);
                 }
                 break;
             default:
-                sendPlayerMessage(player, "você não possui profissão, digite /jobselect");
+                sendPlayerMessage(player, Msg_Command_Working_NoJob);
         }
     }
 
@@ -94,9 +99,13 @@ public class CommandWorking implements CommandExecutor {
         switch (SqlJobManager.getInstance().getPlayerProfession(player.getUniqueId())) {
             case "miner":
                 player.getInventory().remove(pickMiner);
-                sendPlayerMessage(player, "Você não está mais trabalhando");
-                SqlJobManager.getInstance().setPlayerWorking(player.getUniqueId(), "false");
+                setPlayerWorking(player, "false");
+                sendMessageActionbar(player, Msg_Command_Working_End);
                 break;
         }
+    }
+
+    public static void setPlayerWorking(Player player, String value) {
+        SqlJobManager.getInstance().setPlayerWorking(player.getUniqueId(), value);
     }
 }

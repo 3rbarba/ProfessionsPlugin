@@ -31,8 +31,12 @@
                    jobs.jobselect.others
         descrição: Abre uma GUI para os jogadores escolherem a profissão. Quando usado o comando /profession [nick], abre uma GUI para o jogador mencionado para que ele escolha a profissão, mesmo que ele já tenha uma profissão definida (OBS: não é possível o jogador ter mais que uma profissão, ou seja, quando esse comando for executado, ele irá sobrescrever a profissão que já existe no jogador). O comando /profession [nick] requer a permissão: jobs.jobselect.others
     comando: /jobs
-        permissão: jobs
+        permissão: jobs.jobs
         descrição: Quando usado /jobs reload, recarrega o plugin
+    comando: /working
+        permissão: jobs.working
+        descrição: Algumas profissões tem habilidade especiais ativas e esse comando ativa elas
+    
 
 ## Dependências:
 
@@ -46,7 +50,7 @@
 
 ## Placeholders
 
-    - %hasProfission_player_(nick)% - Se o player não tiver nenhuma profissão retorna false, se tem
+    - %professions_hasProfission_player_(nick)% - Se o player não tiver nenhuma profissão retorna false, se tem
         retorna true. Configuravél no Message.YML
     - %professions_jobName_player_(nick)% - retorna a profissão do player
     - %professions_hasWorking_player_(nick)% - retorna se o status de "trabalhando" do comando /trabalhar
@@ -205,10 +209,31 @@ O material tem que ser válido: [Materiais válidos](https://dev.bukkit.org/proj
 
 ## Configuração do Database
 
-* ### MySQL:
-  Para se conectar ao Database você irá precisar do endereço, porta, usuário, senha e database.
+A conexão com o banco de dados é feita por meio do arquivo database.yml
 
-  O único campo opcional é o de "DATABASE". Se ainda não existir um banco de dados com esse nome ele irá criar e se conectar. Recomendo que modifique esse campo apenas se houver conflito com algum banco de dados já existente.
+    Database.yml
+        #SQLite or MySQL
+        Database:
+            Type: MySQL
+        MySql:
+            HOST: localhost
+            PORT: 3306
+            USER: root
+            PASSWORD: root
+            DATABASE: professions
+            TABLE: jobs
+        SQLite:
+            FILENAME: jobs.db
+
+
+* ### SQLite:
+    A única coisa que você irá configurar aqui é o nome do arquivo no campo de 'FILENAME'. Muito cuidado quando
+    for alterar o nome desse arquivo, pois você pode perder os dados dos jogadores.
+
+* ### MySQL:
+  Para se conectar ao Database você irá precisar do endereço, porta, usuário, senha, database e tabela.
+
+  Os campos opcionais é o de "DATABASE" e o "TABLE". Se ainda não existir um banco de dados e ou uma tabela com esse nome ele irá criar e se conectar. Recomendo que modifique esse campo apenas se houver conflito com algum banco de dados já existente.
 
   Você precisará colocar o ip SEM A PORTA no campo "HOST" e a SÓ a porta no campo "PORT".
 
@@ -226,3 +251,6 @@ O material tem que ser válido: [Materiais válidos](https://dev.bukkit.org/proj
    Esse nome_do_database deve ser igual ao "DATABASE".
 
 3. A função da última linha é somente atualizar e aplicar as mudanças
+
+
+    

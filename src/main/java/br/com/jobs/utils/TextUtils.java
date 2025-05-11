@@ -35,4 +35,8 @@ public class TextUtils{
         if (msgmodif.contains("§") || msgmodif.contains("&") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
         return msgmodif;
     }
+    public static String sendMessageActionbar(Player player, String msg) {
+        player.sendActionBar(msg);
+        return msg;
+    }
 }

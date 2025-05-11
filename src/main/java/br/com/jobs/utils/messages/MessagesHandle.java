@@ -10,8 +10,11 @@ public class MessagesHandle {
     public static final String prefix = color(cfMessage.getString("Prefix"));
     public static final String Msg_NoPermission = color(cfMessage.getString("NoPermission"));
     public static final String Msg_Target_Error = color(cfMessage.getString("Msg_Target_Error"));
-    public static final String hasPermission_true = color(cfMessage.getString("Placeholder.hasPermission_true", "TRUE"));
-    public static final String hasPermission_false = color(cfMessage.getString("Placeholder.hasPermission_false", "FALSE"));
+
+    public static final String hasPermission_true = color(cfMessage.getString("Placeholder.hasPermission_true"));
+    public static final String hasPermission_false = color(cfMessage.getString("Placeholder.hasPermission_false"));
+    public static final String hasWorking_false = color(cfMessage.getString("Placeholder.hasWorking_false"));
+    public static final String hasWorking_true = color(cfMessage.getString("Placeholder.hasWorking_true"));
 
     public static final String Msg_command_Error = color(cfMessage.getString("Msg_Command_Error"));
     public static final String Msg_ReloadConfigDB = color(cfMessage.getString("Database.Msg_ReloadConfigDB"));
@@ -42,4 +45,12 @@ public class MessagesHandle {
     public static final String Msg_Command_JobsSelect_SelectProfission = color(cfMessage.getString("Commands.JobsSelect.Msg_Command_JobsSelect_SelectProfission"));
     public static final String Msg_Command_JobsSelect_InvalidMaterial = color(cfMessage.getString("Commands.JobsSelect.Msg_Command_JobsSelect_InvalidMaterial"));
     public static final String Msg_command_Jobsreloadusage = color(cfMessage.getString("Commands.Jobs.Msg_Command_JobsReloadUsage"));
+
+    public static final String Msg_Command_Working_Start = color(cfMessage.getString("Commands.Working.Msg_Command_Working_Start"));
+    public static final String Msg_Command_Working_End = color(cfMessage.getString("Commands.Working.Msg_Command_Working_End"));
+    public static final String Msg_Command_Working_EmptyHand = color(cfMessage.getString("Commands.Working.Msg_Command_Working_EmptyHand"));
+    public static final String Msg_Command_Working_NoJob = color(cfMessage.getString("Commands.Working.Msg_Command_Working_NoJob"));
+    public static final String Msg_Command_Working_Execute_error = color(cfMessage.getString("Commands.Working.Msg_Command_Working_Execute_error"));
+
+    
 }

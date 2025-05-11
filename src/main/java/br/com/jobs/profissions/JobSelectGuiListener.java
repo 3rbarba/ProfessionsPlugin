@@ -2,10 +2,8 @@ package br.com.jobs.profissions;
 import br.com.jobs.Jobs;
 import br.com.jobs.sql.SqlJobManager;
 import br.com.jobs.utils.TextUtils;
-import io.papermc.paper.datacomponent.item.consumable.ConsumeEffect;
 import org.bukkit.*;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -21,10 +19,10 @@ import java.util.Objects;
 import static br.com.jobs.Jobs.getGuiConfigYML;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
+import static br.com.jobs.utils.ManagerGUI.key;
+
 
 public class JobSelectGuiListener implements Listener {
-
-    private static final NamespacedKey PROFESSION_KEY = new NamespacedKey(Jobs.getInstance(), "profession");
 
     private final SqlJobManager jobManager;
 
@@ -32,14 +30,13 @@ public class JobSelectGuiListener implements Listener {
         this.jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
     }
 
-    public static void openGUI(Player target) {
+    public static void openGUI(Player player) {
         ConfigurationSection guiSection = getGuiConfigYML().getConfig().getConfigurationSection("gui");
 
         if (guiSection == null) {
-            sendPlayerMessage(target, Msg_Command_JobsSelect_InvalidGui);
+            sendPlayerMessage(player, Msg_Command_JobsSelect_InvalidGui);
             return;
         }
-
         String title = guiSection.getString("title", "Seleção de Profissões");
         Inventory inv = Bukkit.createInventory(null, 45, title);
 
@@ -53,7 +50,6 @@ public class JobSelectGuiListener implements Listener {
                 if (slot < 0 || slot >= inv.getSize()) {
                     continue;
                 }
-
                 String materialName = itemConfig.getString("material", "BOOK");
                 Material material = Material.matchMaterial(materialName);
 
@@ -61,7 +57,6 @@ public class JobSelectGuiListener implements Listener {
                     sendConsoleMessage(Msg_Command_JobsSelect_InvalidMaterial + jobKey);
                     continue;
                 }
-
                 String displayName = color(itemConfig.getString("display_name", "§aProfissão"));
                 List<String> lore = itemConfig.isSet("lore")
                         ? itemConfig.getStringList("lore").stream().map(TextUtils::color).toList()
@@ -74,7 +69,7 @@ public class JobSelectGuiListener implements Listener {
                     meta.setLore(lore);
 
                     meta.getPersistentDataContainer().set(
-                            PROFESSION_KEY,
+                            key,
                             PersistentDataType.STRING,
                             jobKey
                     );
@@ -84,11 +79,9 @@ public class JobSelectGuiListener implements Listener {
                 inv.setItem(slot, item);
             }
         }
-
         fillPlaceholderItems(inv);
-        target.openInventory(inv);
+        player.openInventory(inv);
     }
-
     private static void fillPlaceholderItems(Inventory inv) {
         ItemStack placeholder = new ItemStack(Material.BLACK_STAINED_GLASS_PANE);
         ItemMeta meta = placeholder.getItemMeta();
@@ -103,28 +96,25 @@ public class JobSelectGuiListener implements Listener {
             }
         }
     }
-
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
         String guiTitle = getGuiConfigYML().getConfig().getString("gui.title", "Seleção de Profissões");
         if (!e.getView().getTitle().equals(guiTitle)) {
             return;
         }
-
-        e.setCancelled(true);
+       e.setCancelled(true);
 
         ItemStack clickedItem = e.getCurrentItem();
         if (clickedItem == null || clickedItem.getType() == Material.AIR || !clickedItem.hasItemMeta()) {
             return;
         }
-
         ItemMeta meta = clickedItem.getItemMeta();
         PersistentDataContainer dataContainer = meta.getPersistentDataContainer();
 
-        if (!dataContainer.has(PROFESSION_KEY, PersistentDataType.STRING)) {
+        if (!dataContainer.has(key, PersistentDataType.STRING)) {
             return;
         }
-        String jobKey = dataContainer.get(PROFESSION_KEY, PersistentDataType.STRING);
+        String jobKey = dataContainer.get(key, PersistentDataType.STRING);
         String displayName = removeColors(getGuiConfigYML().getConfig().getString("gui.items." + jobKey + ".display_name"));
         if (jobKey == null) return;
 

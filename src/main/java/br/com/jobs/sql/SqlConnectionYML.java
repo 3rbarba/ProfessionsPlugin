@@ -4,6 +4,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
@@ -46,14 +50,23 @@ public class SqlConnectionYML {
     }
 
     private void loadConfig() {
-        if (getConfig().getConfigurationSection("MySql") == null) {
+        if (getConfig().getConfigurationSection("Database") == null) {
+            List<String> header = new ArrayList<>();
+            header.add("#SQLite or MySQL");
+            header.add("#Por enquanto não está implementado o SQLite");
+            getConfig().options().setHeader(header);
+            getConfig().createSection("Database");
+            getConfig().set("Database.Type", "MySQL");
             getConfig().createSection("MySql");
             getConfig().set("MySql.HOST", "localhost");
-            getConfig().set("MySql.PORT", 3306);
+            getConfig().set("MySql.PORT", 2222);//todo trocar para 3306
             getConfig().set("MySql.USER", "root");
             getConfig().set("MySql.PASSWORD", "root");
             getConfig().set("MySql.DATABASE", "professions");
             getConfig().set("MySql.TABLE", "jobs");
+            getConfig().createSection("SQLite");
+            getConfig().set("SQLite.FILENAME", "jobs.db");
+
             saveConfig();
         }
     }

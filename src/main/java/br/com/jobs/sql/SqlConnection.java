@@ -1,16 +1,16 @@
 package br.com.jobs.sql;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import static br.com.jobs.sql.SqlJobManager.cf;
+
+import static br.com.jobs.Jobs.*;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 public class SqlConnection {
     private Connection connection;
-
+    public static ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
     public void connect() {
 
 

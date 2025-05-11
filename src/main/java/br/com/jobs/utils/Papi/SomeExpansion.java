@@ -8,8 +8,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
 
-import static br.com.jobs.utils.messages.MessagesHandle.hasPermission_false;
-import static br.com.jobs.utils.messages.MessagesHandle.hasPermission_true;
+import static br.com.jobs.utils.messages.MessagesHandle.*;
 
 
 public class SomeExpansion extends PlaceholderExpansion {
@@ -65,11 +64,10 @@ public class SomeExpansion extends PlaceholderExpansion {
             String hasWorking = sqlJobManager.hasWoking(targetPlayer.getUniqueId());
 
             if (hasWorking == null || hasWorking.isEmpty() || hasWorking.equalsIgnoreCase("false")) {
-                return "folgando";/* todo trocar para message.yml*/
+                return hasWorking_false;
             } else {
-                return "trabalhando";
+                return hasWorking_true;
             }
-
 
         }
         return "";

@@ -2,7 +2,7 @@ package br.com.jobs.sql;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
-import static br.com.jobs.sql.SqlJobManager.cf;
+import static br.com.jobs.sql.SqlConnection.cf;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 

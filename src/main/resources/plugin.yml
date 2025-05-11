@@ -9,7 +9,7 @@ softdepend:
   - ["Auraskills"]
 commands:
   working:
-    description:
+    description: inicializa algumas habilidades especiais de algumas profissões
     permission: jobs.working
     aliases:
       - trabalhar

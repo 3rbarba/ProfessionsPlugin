@@ -7,12 +7,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.UUID;
-
-import static br.com.jobs.Jobs.getSqlConnectionYML;
+import static br.com.jobs.sql.SqlConnection.cf;
 import static br.com.jobs.utils.TextUtils.warnLoggers;
 
 public class SqlJobManager {
-    public static ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
     String default_db = cf.getString("TABLE", "jobs");
     private final Connection connection;
     private static SqlJobManager instance;
