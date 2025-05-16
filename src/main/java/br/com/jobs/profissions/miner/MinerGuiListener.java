@@ -1,4 +1,5 @@
 package br.com.jobs.profissions.miner;
+import br.com.jobs.profissions.miner.breakArea.BreakAreaGUI;
 import br.com.jobs.utils.ManagerGUI;
 import org.bukkit.*;
 import org.bukkit.entity.*;
@@ -27,31 +28,30 @@ public class MinerGuiListener implements Listener {
             loreBreakArea.add("§eClique com o esquerdo para ativar");
             loreBreakArea.add("§eClique com o direito para abrir o menu de seleção");
 
-        inv.setItem(10, managerGUI.createMenuItem(Material.LEVER, "§aQuebrar Área", loreBreakArea));
-        inv.setItem(13, managerGUI.createMenuItem(Material.IRON_PICKAXE, "§6Escolher Nível", loreBreakArea));
-        inv.setItem(16, managerGUI.createMenuItem(Material.BARRIER, "§cFechar", loreBreakArea));
+        inv.setItem(10, managerGUI.createMenuItem(Material.LEVER, "§aQuebrar em Área", loreBreakArea));
+        inv.setItem(12, managerGUI.createMenuItem(Material.TORCH, "§6Vagalume", null));
+        inv.setItem(14, managerGUI.createMenuItem(Material.COMPOSTER, "§6Blacklist", null));
+        inv.setItem(16, managerGUI.createMenuItem(Material.REDSTONE_TORCH, "§cVeinRadar", null));
+        inv.setItem(26, managerGUI.createMenuItem(Material.BARRIER, "§cFechar", null));
         player.openInventory(inv);
-
     }
-
-    static boolean BreakArea;
+    public static boolean BreakBlocks = false;
+    
     @EventHandler
     public void onInventoryClick(InventoryClickEvent e) {
-
         if (e.getCurrentItem() == null || e.getCurrentItem().getType() == Material.AIR) {
             return;
         }
         Player player = (Player) e.getWhoClicked();
         if (e.getView().getTitle().equals(gui)) {
-            if (e.getSlot() == 1 && e.getCurrentItem().getType() == Material.LEVER) {
-                /* todo arrumar isso */
+            if (e.getSlot() == 10 && e.getCurrentItem().getType() == Material.LEVER) {
                 if (e.isLeftClick()) {
-                    if (!BreakArea) {
+                    if (BreakBlocks) {
                         sendMessageActionbar(player, "§2Quebrar em área ativado");
-                        BreakArea = true;
+                        BreakBlocks = true;
                     } else {
-                        BreakArea = false;
                         sendMessageActionbar(player, "§cQuebrar em área desativado");
+                        BreakBlocks = false;
                     }
                 } else if (e.isRightClick()) {
                     BreakAreaGUI breakAreaGUI = new BreakAreaGUI();
@@ -59,12 +59,19 @@ public class MinerGuiListener implements Listener {
                     return;
                 }
             }
+            if (e.getSlot() == 12 && e.getCurrentItem().getType() == Material.TORCH) {
+
+            }
+            if (e.getSlot() == 14 && e.getCurrentItem().getType() == Material.COMPOSTER) {
+
+            }
+            if (e.getSlot() == 16 && e.getCurrentItem().getType() == Material.REDSTONE_TORCH) {
+
+            }
             e.setCancelled(true);
             player.closeInventory();
         }
     }
-
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         Player player = event.getPlayer();

@@ -6,6 +6,8 @@
 
 [Comandos](#comandos)
 
+[Permissões](#permissões)
+
 [Dependências](#dependências)
 
 [Compatível](#compatível)
@@ -18,25 +20,36 @@
 
 ## Comandos:
 
-    comando: /reloadconfig [database|message]
+    comando: /reloadconfig [guiconfig | messagens]
         aliases: /rlc
-        permissão: jobs.reloadconfig
         descrição: Recarrega os arquivos Message.yml e Database.yml, aplicando a configuração com o servidor online. Quando o comando usado for: /reloadconfig database, ele irá recarregar o arquivo e reconectar com o banco de dados.
-    comando: /profission
+    comando: /profission (player)
         aliases: /profissao
                  /professionselect
                  /jobselect
                  /profissaoset
-        permissão: jobs.jobselect
-                   jobs.jobselect.others
         descrição: Abre uma GUI para os jogadores escolherem a profissão. Quando usado o comando /profession [nick], abre uma GUI para o jogador mencionado para que ele escolha a profissão, mesmo que ele já tenha uma profissão definida (OBS: não é possível o jogador ter mais que uma profissão, ou seja, quando esse comando for executado, ele irá sobrescrever a profissão que já existe no jogador). O comando /profession [nick] requer a permissão: jobs.jobselect.others
-    comando: /jobs
-        permissão: jobs.jobs
+    comando: /jobs [help | reload | dbbackup | dbrestore] (list)
+                   jobs.admin.backup - para executar o comando /jobs dbbackup (list)
         descrição: Quando usado /jobs reload, recarrega o plugin
-    comando: /working
-        permissão: jobs.working
+        quando usardo /jobs dbbackup (nome_do_backup) cria um backup do banco de dados que está sendo usado no momento.
+        O nome do backup é opcional. 
+        /jobs dbbackup [listar|list] mostra todos os backups na pasta, com data e hora do backup
+        /jobs dbrestore [nome_do_backup] irá restaurar o mencionado, é importante da /jobs dbrestore confirm [nome_do_backup]
+        e reiniciar o servidor para que a restauração se complete.
+        comando: /working
         descrição: Algumas profissões tem habilidade especiais ativas e esse comando ativa elas
-    
+
+## Permissões
+| Permissões            | Descrição                                                                 |
+|-----------------------|---------------------------------------------------------------------------|
+| jobs.reloadconfig     | permissão para executar o comando /reloadconfig                           |
+| jobs.jobselect        | permissão para executar p comando /jobselect                              |
+| jobs.jobselect.others | permissão para executar o comando /jobselect (player)                     |
+| jobs.reload           | permissão para executar o comando /jobs reload                            |
+| jobs.backup           | permissão para executar o comando /jobs backup                            |
+| jobs.admin.backup     | permissão para executar o comando /jobs backup list <br/> e /jobs restore |
+| jobs.working          | permissão para executar o comando /working                                |
 
 ## Dependências:
 
@@ -61,62 +74,93 @@
 
 A maioria das mensagens do plugin está no arquivo 'Message.yml'. Fique à vontade para modificar.
 
-    Message.yml:
-        Messages:
-        Prefix: '&6[Professions] '
-        NoPermission: '&cVocê não tem permissão para usar este comando!'
-        Msg_Command_Error: '&cOcorreu um erro ao executar este comando.'
-        Msg_Target_Error: '&c''%s'' não é um jogador.'
-            Placeholder:
-                hasPermission_false: 'False'
-                hasPermission_true: 'True'
-            Database:
-                Msg_NoFoundDB_file: '&2Arquivo SqlConection não encontrado.'
-                Msg_connectionDB_success: '&aConexão com o banco de dados estabelecida com sucesso.'
-                Msg_connectionDB_failed: '&cFalha ao conectar ao banco.'
-                Msg_connectionDB_finished: '&aConexão com o banco encerrada.'
-                Msg_connectionDB_finishedError: '&cErro ao encerrar a conexão.'
-                Msg_IncorrectFieldsDB: '&cCampos do MySQL não preenchidos corretamente no Database.YML.'
-                Msg_command_DisconnectDB: '&aDesconectando do banco de dados.'
-                Msg_command_ConnectDB: '&aReconectando ao banco de dados.'
-                Msg_db_success: '&aDatabase %s criada/verificada com sucesso.'
-                Msg_db_error: '&cErro ao criar/verificar a database ''%s'': '
-                Msg_tableDB_success: '&aTabela %s criada/verificada com sucesso.'
-                Msg_tableDB_error: '&cErro ao criar/verificar a tabela %s: '
-                Msg_CreationFileDB_success: '&2Database.yml foi criado com sucesso.'
-                Msg_SaveFileDB_Error: '&cErro ao salvar o arquivo Database.yml.'
-                Msg_ReloadConfigDB: '&2Database.yml foi recarregado com sucesso.'
-            File:
-                Msg_Error_Saved: '&cNão foi possível salvar o arquivo messages.yml.'
-                Msg_FileCreated: '&2O arquivo messages.yml foi criado com sucesso.'
-                Msg_Error_Creation: '&cErro ao criar o arquivo ''messages.yml'': '
-                Msg_FileLoaded: '&aArquivo de mensagens ''messages.yml'' carregado.'
-            Commands:
-                ReloadConfig:
-                    Msg_SintaxReloadConf_Error: '&cO uso correto é /reloadconfig [database | message
-                    | gui].'
-                    Msg_Command_ReloadConfig: '&2Arquivo messages.yml recarregado com sucesso.'
-                    Msg_Command_ReloadConfigDB_Error: '&cFalha ao conectar ao banco de dados. Verifique
-                    o Database.yml e reinicie o plugin'
-                    Msg_Command_ReloadConfigGuiYML: '&2Arquivo ConfigGUI.yml recarregado com sucesso.'
-                    Msg_Command_ReloadConfigGuiYML_Error: '&cErro ao recarregar o arquivo ConfigGUI.yml.
-                    Verifique os logs.'
-                    Msg_Command_ReloadConfigGuiYML_Create: '&2Arquivo ConfigGUI.yml criado com sucesso.'
-                    Msg_Command_ReloadConfigGuiYML_Create_Error: '&cErro ao criar o arquivo ConfigGUI.yml.
-                    Verifique os logs.'
-                Jobs:
-                    Msg_Command_JobsReloadUsage: '&cUso correto: /jobs reload'
-                    Msg_Command_JobsReload: '&2Plugin reiniciado com sucesso.'
-                JobsSelect:
-                    Msg_Command_JobsSelect_InvalidGui: §cAs configurações da GUI estão inválidas.
-                    Informe um administrador.
-                    Msg_Command_JobsSelect_SelectProfission: '§aVocê selecionou a profissão: '
-                    Msg_Command_JobsSelect_InvalidMaterial: §cO material selecionado é inválido.
-                    Informe um administrador.
+    Messages:
+      Prefix: '&6[Professions] '
+      NoPermission: '&cVocê não tem permissão para usar este comando!'
+      Msg_Command_Error: '&cOcorreu um erro ao executar este comando.'
+      Msg_Target_Error: '&c''%s'' não é um jogador.'
+      Placeholder:
+        hasPermission_false: 'False'
+        hasPermission_true: 'True'
+        hasWorking_false: Folgando
+        hasWorking_true: Trabalhando
+      Database:
+        InvalidUUID: '&cUUID inválido: '
+        UsingMySQL: §aUsando MySQL como banco de dados
+        UsingSQLite: §aUsando SQLite como banco de dados
+        Unknown_Database: '&cTipo de banco de dados desconhecido. Usando SQLite como padrão.'
+        Msg_tableDB_success: '&aTabela %s criada/verificada com sucesso.'
+        Msg_tableDB_error: '&cErro ao criar/verificar a tabela %s: '
+        Msg_db_success: '&aDatabase %s criada/verificada com sucesso.'
+        Msg_db_error: '&cErro ao criar/verificar a database ''%s'': '
+        Msg_connectionDB_finished: '&aConexão com o banco encerrada.'
+        Msg_connectionDB_finishedError: '&cErro ao encerrar a conexão.'
+        Backup_Success: 'Backup do %s criado com sucesso: '
+        Backup_Error: '&cBackup do %s não foi criado: '
+        Msg_Restore_error: 'Erro ao restaurar o backup: '
+        Msg_Restore_Success: 'Backup do %s restaurado com sucesso a partir de: '
+        MySQL:
+          Msg_connectionDB_success: '&aConexão com o banco de dados estabelecida com sucesso.'
+          Msg_connectionDB_failed: '&cFalha ao conectar ao banco.'
+          Msg_IncorrectFieldsDB: '&cCampos do MySQL não preenchidos corretamente no Database.YML.'
+          Msg_command_DisconnectDB: '&aDesconectando do banco de dados.'
+          Msg_command_ConnectDB: '&aReconectando ao banco de dados.'
+          Msg_ReconnectingDB: '&eTentando reconectar ao banco de dados'
+          Restore_NoFindFile: '&cArquivo de backup não encontrado: '
+          Restore_SQLError: '&cErro ao executar comando SQL durante restauração: '
+        SQLite:
+          Msg_BackupFile_error: '&cNão foi possível criar o diretório de backup: '
+          Msg_BackupConnection_error: '&cNão é possível fazer backup: conexão com SQLite está fechada'
+          Msg_RestoreFile_error: '&cArquivo de banco de dados SQLite não encontrado:'
+      File:
+        Msg_Error_Saved: '&cNão foi possível salvar o arquivo messages.yml.'
+        Msg_FileCreated: '&2O arquivo messages.yml foi criado com sucesso.'
+        Msg_Error_Creation: '&cErro ao criar o arquivo ''messages.yml'': '
+        Msg_FileLoaded: '&aArquivo de mensagens ''messages.yml'' carregado.'
+        Msg_CreationFileDB_success: '&2Database.yml foi criado com sucesso.'
+        Msg_SaveFileDB_Error: '&cErro ao salvar o arquivo Database.yml.'
+        Msg_ReloadConfigDB: '&2Database.yml foi recarregado com sucesso.'
+        Msg_NoFoundDB_file: '&2Arquivo Database.yml não encontrado.'
+      Commands:
+        ReloadConfig:
+          Msg_Command_ReloadConfig: '&2Arquivo messages.yml recarregado com sucesso.'
+          Msg_Command_ReloadConfigDB_Error: '&cFalha ao conectar ao banco de dados. Verifique o Database.yml e reinicie o plugin'
+          Msg_Command_ReloadConfigGuiYML: '&2Arquivo ConfigGUI.yml recarregado com sucesso.'
+          Msg_Command_ReloadConfigGuiYML_Error: '&cErro ao recarregar o arquivo ConfigGUI.yml. Verifique os logs.'
+          Msg_Command_ReloadConfigGuiYML_Create: '&2Arquivo ConfigGUI.yml criado com sucesso.'
+          Msg_Command_ReloadConfigGuiYML_Create_Error: '&cErro ao criar o arquivo ConfigGUI.yml. Verifique os logs.'
+        Jobs:
+          Msg_Command_JobsReload: '&2Plugin reiniciado com sucesso.'
+          Backup:
+            Msg_Command_BackupCreating: '&eRealizando backup do banco de dados...'
+            Msg_Command_BackupSuccess: '&aBackup criado com sucesso: %filename%'
+            Msg_Command_Backup_Success: '&aBackup realizado com sucesso!'
+            Msg_Command_BackupError: '&cErro ao criar backup. Verifique o console para mais detalhes.'
+            Msg_Command_BackupNoFound: '&cNenhum backup encontrado.'
+            Msg_Command_BackupUsage: '&cUso correto: /jobs dbbackup <nome_do_backup>'
+            Msg_Command_BackupListUsage: '&cUso correto: /jobs dbbackup list'
+          Restore:
+            Msg_Command_RestoreSuccess: '&aBackup restaurado com sucesso!'
+            Msg_Command_RestoreWarning: '&c&lATENÇÃO! &cRestaurar um backup substituirá TODOS os dados atuais!'
+            Msg_Command_RestoreConfirm: '&cDigite ''/jobs dbrestore confirmar %filename% para confirmar.'
+            Msg_Command_RestoreBackup: '&2 Restaurando backup: '
+            Msg_Command_RestoreUsage: '&cUso correto: /dbrestore confirmar <nome_do_backup>'
+          JobsSelect:
+            Msg_Command_JobsSelect_InvalidGui: §cAs configurações da GUI estão inválidas. Informe um administrador.
+            Msg_Command_JobsSelect_SelectProfission: '§aVocê selecionou a profissão: '
+            Msg_Command_JobsSelect_InvalidMaterial: §cO material selecionado é inválido. Informe um administrador.
+          Working:
+            Msg_Command_Working_Execute_error: '&cOcorreu um erro ao executar este comando.
+            Tente novamente. Se o erro persistir, entre em contato com um administrador.'
+            Msg_Command_Working_NoJob: '&cVocê ainda não escolheu uma profissão. digite /jobselect'
+            Msg_Command_Working_EmptyHand: '&cEsvazie sua mão primeiro'
+            Msg_Command_Working_Start: '&aTrabalhando'
+            Msg_Command_Working_End: '&aVocê não está mais trabalhando.'
 
 
 
-  <!-- Lembrar de verificar se está atualizado última atualização 05/05 -->
+
+  <!-- Lembrar de verificar se está atualizado última atualização 15/05 -->
 
 ## ConfigureGUI
 
@@ -214,7 +258,7 @@ A conexão com o banco de dados é feita por meio do arquivo database.yml
     Database.yml
         #SQLite or MySQL
         Database:
-            Type: MySQL
+            Type: SQLite
         MySql:
             HOST: localhost
             PORT: 3306
@@ -222,13 +266,9 @@ A conexão com o banco de dados é feita por meio do arquivo database.yml
             PASSWORD: root
             DATABASE: professions
             TABLE: jobs
-        SQLite:
-            FILENAME: jobs.db
-
 
 * ### SQLite:
-    A única coisa que você irá configurar aqui é o nome do arquivo no campo de 'FILENAME'. Muito cuidado quando
-    for alterar o nome desse arquivo, pois você pode perder os dados dos jogadores.
+  Basta alterar o "Database: Type:" para "SQLite"
 
 * ### MySQL:
   Para se conectar ao Database você irá precisar do endereço, porta, usuário, senha, database e tabela.

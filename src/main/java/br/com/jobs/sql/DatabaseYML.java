@@ -5,17 +5,16 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
-public class SqlConnectionYML {
+public class DatabaseYML {
     private final File file;
     private FileConfiguration fileConfiguration;
 
-    public SqlConnectionYML() {
+    public DatabaseYML() {
         file = new File(Jobs.getInstance().getDataFolder(), "Database.yml");
 
         if (!file.exists()) {
@@ -24,7 +23,7 @@ public class SqlConnectionYML {
             } catch (IOException e) {
                 System.out.print("");
             }
-            sendConsoleMessage(Msg_CreationFileDB_sucess);
+            sendConsoleMessage(Msg_CreationFileDB_success);
         }
 
         fileConfiguration = YamlConfiguration.loadConfiguration(file);
@@ -44,28 +43,21 @@ public class SqlConnectionYML {
         }
     }
 
-    public void reloadConfig() {
-        fileConfiguration = YamlConfiguration.loadConfiguration(file);
-        sendConsoleMessage(Msg_ReloadConfigDB);
-    }
-
     private void loadConfig() {
         if (getConfig().getConfigurationSection("Database") == null) {
             List<String> header = new ArrayList<>();
+            header.add("");
             header.add("#SQLite or MySQL");
-            header.add("#Por enquanto não está implementado o SQLite");
             getConfig().options().setHeader(header);
             getConfig().createSection("Database");
-            getConfig().set("Database.Type", "MySQL");
+            getConfig().set("Database.Type", "SQLite");
             getConfig().createSection("MySql");
             getConfig().set("MySql.HOST", "localhost");
-            getConfig().set("MySql.PORT", 2222);//todo trocar para 3306
+            getConfig().set("MySql.PORT", 3306);
             getConfig().set("MySql.USER", "root");
             getConfig().set("MySql.PASSWORD", "root");
             getConfig().set("MySql.DATABASE", "professions");
             getConfig().set("MySql.TABLE", "jobs");
-            getConfig().createSection("SQLite");
-            getConfig().set("SQLite.FILENAME", "jobs.db");
 
             saveConfig();
         }

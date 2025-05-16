@@ -2,6 +2,7 @@
 \professions\qodana.yaml
 .\test\*
 test/
+.gitignore
 # User-specific stuff
 .idea/
 *.iml

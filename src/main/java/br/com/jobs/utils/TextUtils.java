@@ -3,7 +3,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
-import static org.bukkit.Bukkit.getLogger;
 
 public class TextUtils{
 
@@ -23,12 +22,12 @@ public class TextUtils{
     public static void warnLoggers(String msg) {
         String msgmodif = msg;
         if (msgmodif.contains("§") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
-        getLogger().warning("[Professions]%s".formatted(msgmodif));
+        Bukkit.getLogger().warning("[Professions]%s".formatted(msgmodif));
     }
     public static void infoLoggers(String msg) {
         String msgmodif = msg;
         if (msgmodif.contains("§") && msgmodif.length() >= 2) msgmodif = msgmodif.substring(2);
-        getLogger().info("[Professions]%s".formatted(msgmodif));
+        Bukkit.getLogger().info("[Professions]%s".formatted(msgmodif));
     }
     public static String removeColors(String msg) {
         String msgmodif = msg;

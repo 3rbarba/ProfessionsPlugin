@@ -2,8 +2,6 @@ package br.com.jobs.commands;
 import br.com.jobs.Jobs;
 import br.com.jobs.profissions.miner.PickaxeObject;
 import br.com.jobs.sql.SqlJobManager;
-import net.md_5.bungee.api.ChatMessageType;
-import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -38,21 +36,21 @@ public class CommandWorking implements CommandExecutor {
             noJob(player);
             return true;
         }
-        if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("true")) {
+        if (SqlJobManager.getInstance().hasWorking(player.getUniqueId()).equalsIgnoreCase("true")) {
             if (player.getInventory().contains(pickMiner)) {
                 stopWorking(player);
             } else {
                 setPlayerWorking(player, "false");
                 sendPlayerMessage(player, Msg_Command_Working_Execute_error);
             }
-        } else if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("false")) {
+        } else if (SqlJobManager.getInstance().hasWorking(player.getUniqueId()).equalsIgnoreCase("false")) {
             if (!player.getInventory().contains(pickMiner)){
                 startWorking(player);
             }else{
                 setPlayerWorking(player, "true");
                 sendPlayerMessage(player, Msg_Command_Working_Execute_error);
             }
-        } else if (SqlJobManager.getInstance().hasWoking(player.getUniqueId()).equalsIgnoreCase("null")) {
+        } else if (SqlJobManager.getInstance().hasWorking(player.getUniqueId()).equalsIgnoreCase("null")) {
             //Só pra lembrar o de fazer o tratamento desse null
         } else {
             sendPlayerMessage(player, Msg_Command_Working_Execute_error);
@@ -65,7 +63,7 @@ public class CommandWorking implements CommandExecutor {
 
     private boolean isPlayerSetToWork(Player player) {
         try {
-            return jobManager.hasProfission(player.getUniqueId().toString());
+            return jobManager.hasProfession(player.getUniqueId().toString());
         } catch (Exception e) {
             player.sendMessage(Msg_Command_Working_Execute_error);
             return false;

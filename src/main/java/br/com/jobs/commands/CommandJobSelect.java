@@ -30,7 +30,7 @@ public class CommandJobSelect implements CommandExecutor {
             SqlJobManager jobManager = new SqlJobManager(Jobs.getInstance().getConnection());
             UUID executorUUID = player.getUniqueId();
 
-            if (jobManager.hasProfission(executorUUID.toString()) && !player.hasPermission("jobs.jobselect.others")) {
+            if (jobManager.hasProfession(executorUUID.toString()) && !player.hasPermission("jobs.jobselect.others")) {
                 sendPlayerMessage(player, Msg_command_Error);
                 return true;
             }

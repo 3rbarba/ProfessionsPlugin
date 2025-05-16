@@ -61,7 +61,7 @@ public class SomeExpansion extends PlaceholderExpansion {
             String playerName = params.replace("hasWorking_player_", "");
             OfflinePlayer targetPlayer = Bukkit.getOfflinePlayer(playerName);
 
-            String hasWorking = sqlJobManager.hasWoking(targetPlayer.getUniqueId());
+            String hasWorking = sqlJobManager.hasWorking(targetPlayer.getUniqueId());
 
             if (hasWorking == null || hasWorking.isEmpty() || hasWorking.equalsIgnoreCase("false")) {
                 return hasWorking_false;

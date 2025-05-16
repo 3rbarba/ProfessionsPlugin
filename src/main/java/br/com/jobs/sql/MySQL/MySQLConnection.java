@@ -1,17 +1,24 @@
-package br.com.jobs.sql;
+package br.com.jobs.sql.MySQL;
 import org.bukkit.configuration.ConfigurationSection;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-
 import static br.com.jobs.Jobs.*;
 import static br.com.jobs.utils.TextUtils.*;
 import static br.com.jobs.utils.messages.MessagesHandle.*;
 
-public class SqlConnection {
+public class MySQLConnection {
     private Connection connection;
     public static ConfigurationSection cf = getSqlConnectionYML().getConfig().getConfigurationSection("MySql");
+
+    String data = cf.getString("DATABASE", "jobs");
+    String host = cf.getString("HOST");
+    String port = cf.getString("PORT");
+    String user = cf.getString("USER");
+    String pass = cf.getString("PASSWORD");
+
     public void connect() {
+
 
 
         if (cf == null) {
@@ -19,37 +26,32 @@ public class SqlConnection {
             return;
         }
 
-        String default_db = cf.getString("DATABASE", "jobs");
-        String host = cf.getString("HOST");
-        String port = cf.getString("PORT");
-        String user = cf.getString("USER");
-        String pass = cf.getString("PASSWORD");
+
         if (host == null || user == null || pass == null || port == null) {
             warnLoggers(Msg_IncorretFieldsDB);
             return;
         }
 
         try {
-            String baseUrl = "jdbc:mysql://" + host + ":" + port;
+            String Url = "jdbc:mysql://" + host + ":" + port;
 
-            try (Connection tempConnection = DriverManager.getConnection(baseUrl, user, pass)) {
-                SqlCreateDatabase creator = new SqlCreateDatabase(tempConnection);
+            try (Connection tempConnection = DriverManager.getConnection(Url, user, pass)) {
+                MySqlCreateDatabase creator = new MySqlCreateDatabase(tempConnection);
                 creator.createDatabase();
             }
 
             connection = DriverManager.getConnection
-                    (baseUrl + "/" + default_db + "?autoReconnect=true&useSSL=false", user, pass);
+                    (Url + "/" + data + "?autoReconnect=true&useSSL=false", user, pass);
 
-            SqlCreateDatabase tableCreator = new SqlCreateDatabase(connection);
+            MySqlCreateDatabase tableCreator = new MySqlCreateDatabase(connection);
             tableCreator.createJobsTable();
 
-            sendConsoleMessage(Msg_connectionDB_sucess);
+            sendConsoleMessage(Msg_connectionDB_success);
 
         } catch (SQLException e) {
-            warnLoggers(Msg_connectionDB_failed);
-            infoLoggers("mysql://" + host + ":" + port + "/" + default_db);
+            warnLoggers(Msg_connectionDB_failed + e.getMessage());
+            infoLoggers("mysql://" + host + ":" + port + "/" + data);
             infoLoggers("user: " + user + ", password: " + pass);
-            e.printStackTrace();
         }
     }
 
@@ -81,7 +83,7 @@ public class SqlConnection {
 
     public void attemptReconnect() {
         if (!isConnectionValid()) {
-            sendConsoleMessage("Tentando reconectar ao banco de dados...");
+            sendConsoleMessage(Msg_ReconnectingDB);
             connect();
         }
     }

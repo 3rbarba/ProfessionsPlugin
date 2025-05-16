@@ -28,5 +28,5 @@ commands:
       - profissaoset
   jobs:
     permission: jobs.jobs
-    description:
+    description: Comando principal do plugin Jobs para gerenciamento geral.
   teste:

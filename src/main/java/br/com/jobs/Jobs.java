@@ -5,37 +5,38 @@ import br.com.jobs.commands.CommandReloadConfig;
 import br.com.jobs.commands.CommandWorking;
 import br.com.jobs.profissions.GuiConfigYML;
 import br.com.jobs.profissions.JobSelectGuiListener;
-import br.com.jobs.profissions.miner.BreakArea;
-import br.com.jobs.profissions.miner.BreakAreaGUI;
+import br.com.jobs.profissions.miner.breakArea.BreakArea;
+import br.com.jobs.profissions.miner.breakArea.BreakAreaGUI;
 import br.com.jobs.profissions.miner.MinerGuiListener;
 import br.com.jobs.profissions.miner.PickaxeObject;
 import br.com.jobs.profissions.professionsConfigYML.ProfessionsFile;
 import br.com.jobs.profissions.professionsConfigYML.MinerYML;
-import br.com.jobs.sql.SqlConnection;
-import br.com.jobs.sql.SqlConnectionYML;
-import br.com.jobs.sql.SqlJobManager;
+import br.com.jobs.sql.*;
+import br.com.jobs.sql.SQLite.SQLiteManager;
+import br.com.jobs.utils.InventoryCleanupListener;
 import br.com.jobs.utils.Papi.SomeExpansion;
 import br.com.jobs.utils.TabComplete;
 import br.com.jobs.utils.messages.MessageConfigYML;
 import br.com.jobs.utils.messages.MessagesHandle;
-import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
+import java.io.File;
 import java.sql.Connection;
+import static br.com.jobs.utils.TextUtils.warnLoggers;
 
 
 public final class Jobs extends JavaPlugin implements Listener {
 
     private static Jobs instance;
-    private static SqlConnectionYML sqlConnectionYML;
+    private static DatabaseYML databaseYML;
     private static MessageConfigYML messageyml;
     private static GuiConfigYML guiConfigYML;
     private static MinerYML minerYML;
     private static ProfessionsFile professionsFile;
-    private static SqlConnection sqlConnection;
     private MessagesHandle messageHandler;
+    private DatabaseManager databaseManager;
+    private JobsDataRepository jobRepository;
 
     @Override
     public void onEnable() {
@@ -46,70 +47,70 @@ public final class Jobs extends JavaPlugin implements Listener {
         registerEvents();
         registerCommands();
         registerTab();
-        //bStats();
     }
 
     @Override
     public void onDisable() {
-        if (sqlConnection != null) {
-            sqlConnection.disconnect();
+        if (databaseManager != null) {
+            databaseManager.disconnect();
         }
     }
-    public static Jobs getInstance() {
-        return instance;
-    }
-
-    public static MessageConfigYML getMessageyml() {
-        return messageyml;
-    }
-
-    public static SqlConnectionYML getSqlConnectionYML() {return sqlConnectionYML;}
-
-    public static GuiConfigYML getGuiConfigYML() {
-        return guiConfigYML;
-    }
-
-    public static SqlConnection getSqlConnection() {
-        return sqlConnection;
-    }
-
+    public static Jobs getInstance() {return instance;}
+    public static MessageConfigYML getMessageyml() {return messageyml;}
+    public static DatabaseYML getSqlConnectionYML() {return databaseYML;}
+    public static GuiConfigYML getGuiConfigYML() {return guiConfigYML;}
+    public JobsDataRepository getJobRepository() {return jobRepository;}
     public Connection getConnection() {
-        return getSqlConnection().getConnection();
-    }
-
-    public void registerTab() {
-        getCommand("reloadconfig").setTabCompleter(new TabComplete());
-    }
-
-    private void Messages(){
+        if (databaseManager != null) {return databaseManager.getConnection();}
+        return null;}
+    public File createDatabaseBackup(String filename) {
+        if (backupService == null) {return null;}
+        File backupDir = new File(getDataFolder(), "backups");
+        return backupService.createBackup(backupDir, filename);}
+    public boolean restoreDatabaseFromBackup(File backupFile) {
+        if (backupService == null) {return false;}
+        return backupService.restoreFromBackup(backupFile);}
+    public File[] listDatabaseBackups() {
+        if (backupService == null) {return new File[0];}
+        File backupDir = new File(getDataFolder(), "backups");
+        return backupService.listBackups(backupDir);}
+    private void Messages() {
         messageyml = new MessageConfigYML();
         messageHandler = new MessagesHandle();
-        sqlConnectionYML = new SqlConnectionYML();
-        professionsFile = new ProfessionsFile();
+        databaseYML = new DatabaseYML();
         guiConfigYML = new GuiConfigYML();
+        professionsFile = new ProfessionsFile();
         minerYML = new MinerYML();
         minerYML.initialize();
     }
-
-    private void General(){
-        //Database
-        sqlConnection = new SqlConnection();
-        sqlConnection.connect();
-        SqlJobManager.init(sqlConnection.getConnection());
-        SqlJobManager sqlJobManager = new SqlJobManager(sqlConnection.getConnection());
-
-
-        new BukkitRunnable() {
-            @Override
-            public void run() {
-                if (sqlConnection != null) {
-                    sqlConnection.attemptReconnect();
-                }
+    private DatabaseBackupService backupService;
+    
+    private void General() {
+        try {
+            // Database
+            databaseManager = DatabaseFactory.createDatabase();
+            databaseManager.connect();
+    
+            // Inicializar serviço de backup
+            String dbType = getSqlConnectionYML().getConfig().getString("Database.Type", "SQLite");
+            if (databaseManager instanceof SQLiteManager) {
+                backupService = DatabaseBackupFactory.createBackupService(this, dbType, (SQLiteManager) databaseManager);
+            } else {
+                backupService = DatabaseBackupFactory.createBackupService(this, dbType, null);
             }
-        }.runTaskTimer(this, 0, 6000);
-        // PlaceholderAPI
-        if(Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
-            new SomeExpansion(sqlJobManager).register();
+
+            jobRepository = DatabaseFactory.createJobRepository(databaseManager);
+
+            SqlJobManager.init(databaseManager.getConnection());
+            SqlJobManager sqlJobManager = SqlJobManager.getInstance();
+
+            // PlaceholderAPI
+            if (Bukkit.getPluginManager().isPluginEnabled("PlaceholderAPI")) {
+                new SomeExpansion(sqlJobManager).register();
+            }
+        } catch (Exception e) {
+            warnLoggers(e.getMessage());
+            onDisable();
         }
     }
     private void registerEvents() {
@@ -118,6 +119,10 @@ public final class Jobs extends JavaPlugin implements Listener {
         Bukkit.getPluginManager().registerEvents(new PickaxeObject(), this);
         Bukkit.getPluginManager().registerEvents(new BreakArea(), this);
         Bukkit.getPluginManager().registerEvents(new BreakAreaGUI(), this);
+
+        InventoryCleanupListener inventoryCleanup = new InventoryCleanupListener();
+        Bukkit.getPluginManager().registerEvents(inventoryCleanup, this);
+        inventoryCleanup.startPeriodicCleanup(this);
     }
     private void registerCommands() {
         getCommand("reloadconfig").setExecutor(new CommandReloadConfig());
@@ -126,9 +131,9 @@ public final class Jobs extends JavaPlugin implements Listener {
         getCommand("working").setExecutor(new CommandWorking());
         getCommand("teste").setExecutor(new teste());//todo retirar aqui e no plugin.YML
     }
-    private void bStats(){
-        int pluginId = 25814;
-        Metrics metrics = new Metrics(this, pluginId);
+    public void registerTab() {
+        getCommand("reloadconfig").setTabCompleter(new TabComplete());
+        getCommand("jobs").setTabCompleter(new CommandJobs());
     }
 
 }
